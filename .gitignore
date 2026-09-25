@@ -1,0 +1,79 @@
+# ==========================================
+# Gemini Code Game Studio (GCGS) - .gitignore
+# Optimized for Unity, C#, and Multi-Agent AI
+# ==========================================
+
+# ------------------------------------------
+# Unity Generated Folders & Cache
+# ------------------------------------------
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Aa]ssets/[Aa]ssetStoreTools*
+
+# Unity 3D cache
+sysinfo.txt
+*.stackdump
+
+# ------------------------------------------
+# IDE & Code Editor Files
+# ------------------------------------------
+.vs/
+.idea/
+.vscode/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.sln.docstates
+
+# Rider / Resharper
+*.DotSettings.user
+
+# ------------------------------------------
+# Studio Configuration & Local Overrides
+# ------------------------------------------
+# Per-developer local studio settings (overrides project.yaml)
+project.local.yaml
+
+# Temporary session scripts or test artifacts
+tests/test_*.ps1
+tests/migrate.ps1
+scratch/
+*.tmp
+
+# ------------------------------------------
+# OS Generated Files
+# ------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ------------------------------------------
+# Builds & Executables
+# ------------------------------------------
+*.apk
+*.aab
+*.unitypackage
+*.app
+*.exe
+
+# ------------------------------------------
+# CRITICAL: Never ignore Unity .meta files!
+# ------------------------------------------
+!*.meta

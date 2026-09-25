@@ -1,0 +1,33 @@
+# Gemini Code Game Studio (GCGS) project configuration — single source of truth.
+# Controls engine settings, directory paths, and workflow process depth.
+
+schema_version: 1
+
+framework:
+  name: "gemini-code-game-studio"
+  version: 1.0.0
+  created: 2026-09-25
+
+# Default engine configuration (can be updated via /setup-engine)
+engine:
+  name: Unity
+  version: "6000.0" # Unity 6 LTS
+  language: "C#"
+  code_root: "Assets/Scripts"
+
+# Workflow and process knobs
+modes:
+  rigor: minimal            # minimal (jam speed) | standard (balanced) | full (thorough)
+  automation: collaborative # collaborative (always ask) | semi-autonomous | autonomous
+  review_mode: solo         # solo (lead only) | lean (1 director) | full (all directors)
+
+testing:
+  strict: false             # If true, missing test/visual evidence blocks progression
+
+directories:
+  code: "Assets/Scripts"
+  design: "design"
+  docs: "docs"
+  production: "production"
+  tests: "Assets/Tests"
+  evidence: "production/qa/evidence"

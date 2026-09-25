@@ -1,0 +1,42 @@
+{
+  "gcgs-safety-gate": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .agents/hooks/validate-command.ps1",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "gcgs-asset-validator": {
+    "enabled": true,
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .agents/hooks/validate-file.ps1",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "gcgs-session-checkpoint": {
+    "enabled": true,
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .agents/hooks/session-context.ps1",
+        "timeout": 10
+      }
+    ]
+  }
+}
