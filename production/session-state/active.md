@@ -28,3 +28,4 @@ Task: Base Studio Initialization
 - Configured native Windows PowerShell lifecycle hooks in `.agents/hooks.json`.
 - Scaffolded Unity project architecture with Assembly Definitions (`.asmdef`) for Core, Gameplay, UI, and Tests.
 - Removed legacy `Claude-Code-Game-Studios` folder; workspace is 100% clean and self-contained.
+- Enforced mandatory Unity directives: Unity Hub project genesis and strict no-edit policy on `Packages/manifest.json` (guided manual Package Manager installs only).

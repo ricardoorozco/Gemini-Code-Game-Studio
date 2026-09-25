@@ -11,6 +11,7 @@
 - [Studio Architecture & Hierarchy](#studio-architecture--hierarchy)
 - [Core Collaboration Protocol](#core-collaboration-protocol)
 - [Quick Start Guide](#quick-start-guide)
+- [Working with Existing / Advanced Projects (Brownfield)](#working-with-existing--advanced-projects-brownfield)
 - [Workflow Skills Cheatsheet](#workflow-skills-cheatsheet)
 - [Non-Negotiable Development Commandments](#non-negotiable-development-commandments)
 - [Directory Structure](#directory-structure)
@@ -75,8 +76,8 @@ Every major design and coding task adheres to the **5-step collaborative cycle**
 
 ## Quick Start Guide
 
-### Step 1: Clone or Open Workspace
-Open this folder in your Antigravity IDE or Gemini environment.
+### Step 1: Create Unity Project via Unity Hub
+Create your new project from **Unity Hub** (selecting your target Unity 6 version and template). Then place/initialize the Gemini Code Game Studio architecture (`.agents/`, `design/`, `docs/`, `project.yaml`) inside that Unity project directory.
 
 ### Step 2: Run `/start`
 Type `/start` in the chat. The studio will silently diagnose the repository and guide you:
@@ -87,6 +88,48 @@ Type `/start` in the chat. The studio will silently diagnose the repository and 
 
 ### Step 3: Implement Features with `/dev-story`
 Once stories are generated via `/create-stories`, implement them step-by-step with architecture reviews, automated unit tests, and visual verification.
+
+---
+
+## Working with Existing / Advanced Projects (Brownfield)
+
+Gemini Code Game Studio is fully equipped to be adopted into **existing, ongoing, or advanced Unity projects**. It does not force you to rewrite code or restart from scratch.
+
+### 1. Ingesting GCGS into Your Existing Project
+Simply copy the studio architecture into the root of your existing Unity project:
+```
+YourExistingUnityProject/
+├── Assets/                          # Your existing scripts, prefabs, models (untouched)
+├── Packages/                        # Your existing package manifest (untouched)
+├── ProjectSettings/                 # Your existing Unity settings (untouched)
+├── .agents/                         # Studio intelligence (agents, skills, rules, hooks)
+├── design/                          # Game Design Documents (GDDs) & briefs
+├── docs/                            # Architecture records (ADRs) & templates
+├── production/                      # Sprint tracking & visual QA evidence
+├── project.yaml                     # Studio configuration
+└── GEMINI.md                        # Master studio instructions
+```
+
+### 2. Automatic Stage Detection (`/start` or `/project-stage-detect`)
+When you launch `/start` in an existing project:
+1. Select **`D) Existing work`**.
+2. The studio analyzes your codebase: if you have 10+ C# scripts, it automatically identifies your project as being in **Production** or **Pre-Production**.
+3. It skips initial concept brainstorming for features that are already built.
+
+### 3. Brownfield Audit with `/adopt`
+Run `/adopt` to audit existing artifacts against studio standards:
+- Identifies which systems have code but lack documentation, tests, or clear architecture records.
+- Produces a prioritized, non-blocking migration plan in `docs/adoption-plan-[date].md`.
+
+### 4. Reverse-Engineering Documentation (`/reverse-document`)
+Don't write documentation manually for systems you've already coded:
+- `/reverse-document design Assets/Scripts/Gameplay/Combat`: The **Lead Game Designer** inspects your existing C# combat scripts and reverse-authors a complete GDD detailing rules, state transitions, and formulas.
+- `/reverse-document architecture Assets/Scripts/Core`: The **Technical Director** analyzes core abstractions and generates Architecture Decision Records (ADRs).
+
+### 5. Non-Destructive Expansion (`retrofit` & `/quick-design`)
+- **Retrofit existing GDDs**: Run `/design-system retrofit design/gdd/movement.md` to identify and fill missing edge cases or acceptance criteria without altering your existing notes.
+- **Fast iterations**: For minor mechanics or tuning changes in an established codebase, use `/quick-design` instead of full-scale design documents.
+- **Regression Protection**: Before committing new code, specialists run `/code-review` and create `/regression-suite` tests to ensure existing mechanics stay intact.
 
 ---
 
@@ -109,6 +152,8 @@ Type `/` to invoke any of the **74 available skills**:
 
 ## Non-Negotiable Development Commandments
 
+- **Unity Hub Genesis**: Every Unity project must be created via **Unity Hub** (`ProjectSettings/ProjectVersion.txt` must exist).
+- **Strict Package Policy**: The AI will **never** modify `Packages/manifest.json`. The AI will guide you to install needed packages via the **Unity Package Manager** (`Window > Package Manager`), wait for your confirmation, and verify.
 - **Data-Driven Gameplay**: Never hardcode values (speeds, damage, costs). Store gameplay numbers in `ScriptableObject` assets (Unity) or external JSON configs.
 - **Decoupled Architecture**: UI must never own game state. Use events, observables, or message brokers for inter-system communication.
 - **Run and Observe**: A story modifying visuals or gameplay is not complete until it has been tested and visually confirmed. Save screenshots/evidence in `production/qa/evidence/`.

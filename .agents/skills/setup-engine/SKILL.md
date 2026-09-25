@@ -91,16 +91,38 @@ engine:
 
 ---
 
-## 4. Scaffold Code Root
+## 4. Unity Genesis Verification & Package Guidance
 
-Ensure the target code directory exists (e.g. `Assets/Scripts` or `src/`) and contains an initial directory structure or `.gitkeep`.
+### A. Unity Hub Genesis Verification
+If Unity is selected:
+1. Verify that `ProjectSettings/ProjectVersion.txt` exists at the repo root.
+2. If it does NOT exist:
+   - **PAUSE**: Instruct the user:
+     > *"Before we begin writing code, please create this Unity project using **Unity Hub** (selecting your desired Unity 6 version and template). Once created, open this workspace folder in your IDE."*
+   - Do NOT proceed to code scaffolding until the Unity project has been initialized by Unity Hub.
+
+### B. STRICT Package Management Protocol
+- **NEVER attempt to edit or write to `Packages/manifest.json`.**
+- When a system requires a package (e.g., `com.unity.inputsystem`, `com.unity.addressables`, `com.unity.ui`):
+  1. **Guide the User**: Provide the user with the exact package name, ID, and steps in Unity Editor:
+     - Open Unity Editor: `Window > Package Manager`
+     - Select `Packages: Unity Registry` (or Add package by name)
+     - Install `[Package Name / ID]`
+  2. **Pause for Confirmation**: Explicitly wait for the user: *"Please let me know once you have installed the package in Unity."*
+  3. **Read-Only Verification**: Once the user confirms, read `Packages/manifest.json` (read-only) to verify the package is listed before proceeding to write scripts that rely on it.
+
+---
+
+## 5. Scaffold Code Root
+
+Ensure the target code directory exists (e.g. `Assets/Scripts` or `src/`) and contains an initial directory structure with `.asmdef` files.
 
 Update `production/session-state/active.md` checkpoint:
 - Record configured engine and code root.
 
 ---
 
-## 5. Next Steps
+## 6. Next Steps
 
 Advise the developer on the immediate next step:
 - If no game concept exists: `/brainstorm`

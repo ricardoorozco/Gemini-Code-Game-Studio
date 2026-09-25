@@ -15,3 +15,9 @@ paths:
   - Parameters, Local variables: `camelCase`
   - Constants: `PascalCase` or `ALL_CAPS`
   - Interfaces: Prefix with `I` (e.g., `IDamageable`, `IInteractable`)
+- **Package Management Directive (STRICT)**:
+  - NEVER edit or write to `Packages/manifest.json`.
+  - ALL packages must be installed by the user via Unity Editor Package Manager (`Window > Package Manager`).
+  - The AI must guide the user with exact package names, wait for user confirmation, and verify via read-only inspection of `Packages/manifest.json`.
+- **Unity Hub Project Genesis**:
+  - The Unity project root must originate from Unity Hub (`ProjectSettings/ProjectVersion.txt` must exist).

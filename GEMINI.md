@@ -61,7 +61,24 @@ Every major task follows the 5-step collaboration cycle:
 
 ---
 
-## 4. Configuration & Modes
+## 4. Mandatory Unity Directives (Strict & Non-Negotiable)
+
+1. **Unity Hub Project Initialization**:
+   - The Unity project MUST be created by the user from **Unity Hub** (ensuring proper project settings, version pinning, and packages directory).
+   - This studio architecture (`.agents/`, `design/`, `docs/`, `production/`, `project.yaml`) is implemented directly in the root directory created by Unity Hub.
+   - The studio MUST verify that `ProjectSettings/ProjectVersion.txt` exists before writing game code. If absent, the AI will instruct the user to create the project in Unity Hub first.
+
+2. **No Direct Package Manifest Modification**:
+   - The AI MUST NEVER attempt to directly edit `Packages/manifest.json` to install or alter packages.
+   - ALL packages (Input System, UI Toolkit, Addressables, URP, etc.) MUST be installed by the user through the **Unity Editor Package Manager** (`Window > Package Manager`).
+   - **Package Protocol**:
+     1. The AI identifies and guides the user with the exact package name/ID.
+     2. The AI pauses and explicitly waits for the user to confirm installation in Unity Editor.
+     3. Once confirmed, the AI inspects `Packages/manifest.json` (read-only) to verify presence before proceeding.
+
+---
+
+## 5. Configuration & Modes
 
 - Master configuration resides in `project.yaml`.
 - **Rigor Modes (`modes.rigor`)**:
