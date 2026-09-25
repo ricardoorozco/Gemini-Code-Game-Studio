@@ -49,6 +49,8 @@ sysinfo.txt
 # ------------------------------------------
 # Per-developer local studio settings (overrides project.yaml)
 project.local.yaml
+gemini-studio/project.local.yaml
+gemini-studio/**/project.local.yaml
 
 # Temporary session scripts or test artifacts
 tests/test_*.ps1

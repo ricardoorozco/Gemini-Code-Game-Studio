@@ -1,4 +1,4 @@
-{
+﻿{
   "gcgs-safety-gate": {
     "enabled": true,
     "PreToolUse": [
@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .agents/hooks/validate-command.ps1",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"$p = @('gemini-studio/.agents/hooks/validate-command.ps1', '.agents/hooks/validate-command.ps1') | Where-Object { Test-Path $_ } | Select-Object -First 1; & $p\"",
             "timeout": 15
           }
         ]
@@ -22,7 +22,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .agents/hooks/validate-file.ps1",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"$p = @('gemini-studio/.agents/hooks/validate-file.ps1', '.agents/hooks/validate-file.ps1') | Where-Object { Test-Path $_ } | Select-Object -First 1; & $p\"",
             "timeout": 10
           }
         ]
@@ -34,7 +34,7 @@
     "PreInvocation": [
       {
         "type": "command",
-        "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .agents/hooks/session-context.ps1",
+        "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"$p = @('gemini-studio/.agents/hooks/session-context.ps1', '.agents/hooks/session-context.ps1') | Where-Object { Test-Path $_ } | Select-Object -First 1; & $p\"",
         "timeout": 10
       }
     ]

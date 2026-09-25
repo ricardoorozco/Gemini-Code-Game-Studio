@@ -14,7 +14,10 @@ $output = @{
 }
 
 try {
-    $activePath = "production/session-state/active.md"
+    $activePath = "gemini-studio/production/session-state/active.md"
+    if (-not (Test-Path $activePath)) {
+        $activePath = "production/session-state/active.md"
+    }
     if (Test-Path $activePath) {
         $content = Get-Content -Path $activePath -Raw
         $taskMatch = [regex]::Match($content, '\*\*Current task:\*\*\s*(.+)')

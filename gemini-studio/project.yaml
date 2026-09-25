@@ -25,9 +25,10 @@ testing:
   strict: false             # If true, missing test/visual evidence blocks progression
 
 directories:
+  studio_root: "gemini-studio"
   code: "Assets/Scripts"
-  design: "design"
-  docs: "docs"
-  production: "production"
+  design: "gemini-studio/design"
+  docs: "gemini-studio/docs"
+  production: "gemini-studio/production"
   tests: "Assets/Tests"
-  evidence: "production/qa/evidence"
+  evidence: "gemini-studio/production/qa/evidence"
