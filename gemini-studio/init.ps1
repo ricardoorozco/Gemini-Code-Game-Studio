@@ -121,5 +121,142 @@ if (-not (Test-Path $rootRules)) {
 Copy-Item -Path (Join-Path $root "gemini-studio/.agents/rules/*") -Destination $rootRules -Recurse -Force
 Write-Host "  [OK] Synchronized .agents/rules/." -ForegroundColor Green
 
+# 3. Optional: Scaffold recommended Unity architecture if Assets/ exists but Scripts/ does not
+$assetsDir = Join-Path $root "Assets"
+if (Test-Path $assetsDir) {
+    $scriptsDir = Join-Path $assetsDir "Scripts"
+    if (-not (Test-Path $scriptsDir)) {
+        Write-Host "  [+] Blank Assets folder detected. Scaffolding recommended modular architecture..." -ForegroundColor Cyan
+
+        # Core
+        $coreDir = Join-Path $scriptsDir "Core"
+        New-Item -ItemType Directory -Path $coreDir -Force | Out-Null
+        @'
+{
+    "name": "Studio.Core",
+    "rootNamespace": "Studio.Core",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+'@ | Set-Content -Path (Join-Path $coreDir "Studio.Core.asmdef") -Encoding UTF8
+
+        # Gameplay
+        $gameplayDir = Join-Path $scriptsDir "Gameplay"
+        New-Item -ItemType Directory -Path $gameplayDir -Force | Out-Null
+        @'
+{
+    "name": "Studio.Gameplay",
+    "rootNamespace": "Studio.Gameplay",
+    "references": [
+        "Studio.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+'@ | Set-Content -Path (Join-Path $gameplayDir "Studio.Gameplay.asmdef") -Encoding UTF8
+
+        # UI
+        $uiDir = Join-Path $scriptsDir "UI"
+        New-Item -ItemType Directory -Path $uiDir -Force | Out-Null
+        @'
+{
+    "name": "Studio.UI",
+    "rootNamespace": "Studio.UI",
+    "references": [
+        "Studio.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+'@ | Set-Content -Path (Join-Path $uiDir "Studio.UI.asmdef") -Encoding UTF8
+
+        # Data
+        $dataDir = Join-Path $scriptsDir "Data"
+        New-Item -ItemType Directory -Path $dataDir -Force | Out-Null
+        "# ScriptableObject data assets" | Set-Content -Path (Join-Path $dataDir ".gitkeep") -Encoding UTF8
+
+        # Tests
+        $testsEditor = Join-Path $assetsDir "Tests/Editor"
+        New-Item -ItemType Directory -Path $testsEditor -Force | Out-Null
+        @'
+{
+    "name": "Studio.Tests.Editor",
+    "rootNamespace": "Studio.Tests.Editor",
+    "references": [
+        "Studio.Core",
+        "Studio.Gameplay"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+'@ | Set-Content -Path (Join-Path $testsEditor "Studio.Tests.Editor.asmdef") -Encoding UTF8
+
+        $testsRuntime = Join-Path $assetsDir "Tests/Runtime"
+        New-Item -ItemType Directory -Path $testsRuntime -Force | Out-Null
+        @'
+{
+    "name": "Studio.Tests.Runtime",
+    "rootNamespace": "Studio.Tests.Runtime",
+    "references": [
+        "Studio.Core",
+        "Studio.Gameplay"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+'@ | Set-Content -Path (Join-Path $testsRuntime "Studio.Tests.Runtime.asmdef") -Encoding UTF8
+
+        Write-Host "  [OK] Generated Assets/Scripts (Core, Gameplay, UI, Data) and Tests with .asmdef." -ForegroundColor Green
+    } else {
+        Write-Host "  [INFO] Existing Assets/Scripts detected — preserving existing project structure." -ForegroundColor Gray
+    }
+}
+
 Write-Host "`n>>> Gemini Code Game Studio is fully initialized and linked!" -ForegroundColor Cyan
 Write-Host "    You can now use /start or /brainstorm in your AI session.`n" -ForegroundColor Yellow
