@@ -19,20 +19,21 @@ All studio intelligence, specialist roles, skills, and documentation are encapsu
 
 ## 🚀 Quick Start: How to Use in Any Unity Project
 
-Using Gemini Code Game Studio in your own game takes only **3 simple steps**:
+Using Gemini Code Game Studio takes only **3 simple steps**, whether you are starting fresh or adopting it into an active project:
 
-### Step 1: Create your Unity project via Unity Hub
-Create your new project (or open an existing one) using **Unity Hub** (Unity 6 LTS recommended).
+### Step 1: Open or Create your Unity project
+- **New Project**: Create a new project via **Unity Hub** (Unity 6 LTS recommended).
+- **Existing Project**: Open the root folder of your existing Unity game.
 
 ### Step 2: Copy `gemini-studio/` into your project root
-Copy the single `gemini-studio/` folder from this repository into your Unity project's root folder:
+Copy the single `gemini-studio/` folder from this repository into your Unity project's root:
 
 ```
 YourUnityProject/
-├── Assets/
-├── Packages/
-├── ProjectSettings/
-└── gemini-studio/          <-- Copy this folder here!
+├── Assets/                 # Your game assets (untouched!)
+├── Packages/               # Package manifest (untouched!)
+├── ProjectSettings/        # Project settings (untouched!)
+└── gemini-studio/          <-- Copy ONLY this folder here!
 ```
 
 ### Step 3: Run the initial setup script
@@ -44,21 +45,57 @@ powershell -ExecutionPolicy Bypass -File ./gemini-studio/init.ps1
 
 `init.ps1` automatically:
 - Configures the Antigravity studio bridge (`GEMINI.md`, `.agents/skills.json`, `.agents/hooks.json`).
-- Detects if `Assets/` is blank and optionally scaffolds recommended modular Assembly Definitions (`Studio.Core`, `Studio.Gameplay`, `Studio.UI`, `Tests`).
-- Never overwrites your existing game code in brownfield projects.
+- **If your project is new** (`Assets/Scripts` does not exist): Scaffolds recommended modular Assembly Definitions (`Studio.Core`, `Studio.Gameplay`, `Studio.UI`, `Tests`).
+- **If your project is existing** (`Assets/Scripts` already exists): **Preserves 100% of your code and folders untouched.**
 
-That's it! Open the project in Antigravity or your AI editor and type `/start` or `/brainstorm`.
+Open the project in Antigravity or your AI editor and type `/start`!
+
+---
+
+## 🔄 Working with Existing / Advanced Projects (Brownfield)
+
+Already have an ongoing game in development? **Gemini Code Game Studio is non-intrusive and brownfield-ready.** It will **never** overwrite your existing scripts, scenes, or packages, and adapts seamlessly to your established codebase.
+
+### Brownfield Adoption Pipeline:
+
+```mermaid
+graph LR
+    A["Copy gemini-studio/"] --> B["init.ps1 (Non-destructive)"]
+    B --> C["/start (Select 'Existing work')"]
+    C --> D["/adopt (Audit gaps & plan)"]
+    D --> E["/reverse-document (Generate GDDs/ADRs)"]
+    E --> F["/dev-story (Build new features)"]
+```
+
+1. **Stage Auto-Detection (`/start` or `/project-stage-detect`)**:
+   - Type `/start` in the chat and select **`D) Existing work`**.
+   - The studio scans your codebase: if it detects existing C# scripts, it automatically identifies your stage as **Pre-Production** or **Production**.
+   - It bypasses introductory brainstorm steps for systems that you've already built.
+
+2. **Brownfield Gap Audit (`/adopt`)**:
+   - Run `/adopt` to audit your current codebase against studio best practices.
+   - It generates a prioritized, non-blocking adoption report in `gemini-studio/docs/adoption-plan-[date].md` highlighting undocumented mechanics, missing test suites, or performance bottlenecks.
+
+3. **Reverse-Engineering Existing Code into Documentation (`/reverse-document`)**:
+   - Don't waste time typing GDDs or architecture documents for systems you already coded!
+   - `/reverse-document design Assets/Scripts/Combat` — The **Game Designer** analyzes your combat scripts and writes a complete Game Design Document (GDD) with mechanics, math, and state machines.
+   - `/reverse-document architecture Assets/Scripts/Core` — The **Technical Director** inspects your core code and drafts Architecture Decision Records (ADRs).
+
+4. **Safe Expansion (`/quick-design` & `/create-stories`)**:
+   - Add new features or refactor legacy code using `/create-stories` and `/dev-story`. The AI respects your existing conventions, namespaces, and patterns.
 
 ---
 
 ## 🧭 Core Workflow Commands
 
-Once initialized, interact with the studio using slash commands:
+Interact with the studio using slash commands in your AI chat:
 
 | Command | Specialist Role | Purpose |
 | :--- | :--- | :--- |
 | **`/start`** | Producer | Guided onboarding and repository state diagnosis. |
-| **`/brainstorm`** | Creative Director | Game concept ideation and brief authoring. |
+| **`/brainstorm`** | Creative Director | Game concept ideation and brief authoring (for new features or games). |
+| **`/adopt`** | Technical Director | Brownfield audit and non-breaking migration plan for existing games. |
+| **`/reverse-document`** | Game Designer / TD | Reverse-engineer GDDs and ADRs from existing C# code. |
 | **`/design-system <name>`** | Systems Designer | System GDD authoring with formulas and edge cases. |
 | **`/create-stories <epic>`** | Lead Programmer | Break systems into single-session developer stories. |
 | **`/dev-story <path>`** | Specialist Team | Implement code with architecture proposals, unit tests, and visual QA. |

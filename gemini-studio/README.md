@@ -96,19 +96,17 @@ Once stories are generated via `/create-stories`, implement them step-by-step wi
 Gemini Code Game Studio is fully equipped to be adopted into **existing, ongoing, or advanced Unity projects**. It does not force you to rewrite code or restart from scratch.
 
 ### 1. Ingesting GCGS into Your Existing Project
-Simply copy the studio architecture into the root of your existing Unity project:
+Simply copy the single `gemini-studio/` directory into your existing Unity project's root and run `init.ps1`:
 ```
 YourExistingUnityProject/
-├── Assets/                          # Your existing scripts, prefabs, models (untouched)
-├── Packages/                        # Your existing package manifest (untouched)
-├── ProjectSettings/                 # Your existing Unity settings (untouched)
-├── .agents/                         # Studio intelligence (agents, skills, rules, hooks)
-├── design/                          # Game Design Documents (GDDs) & briefs
-├── docs/                            # Architecture records (ADRs) & templates
-├── production/                      # Sprint tracking & visual QA evidence
-├── project.yaml                     # Studio configuration
-└── GEMINI.md                        # Master studio instructions
+├── Assets/                          # Your existing scripts, prefabs, models (100% untouched)
+├── Packages/                        # Your existing package manifest (100% untouched)
+├── ProjectSettings/                 # Your existing Unity settings (100% untouched)
+├── GEMINI.md                        # Lightweight studio bridge
+├── .agents/                         # Bridge pointers (skills.json, hooks.json)
+└── gemini-studio/                   # Studio intelligence, GDDs, ADRs & workflows
 ```
+Run `powershell -ExecutionPolicy Bypass -File ./gemini-studio/init.ps1` to configure the studio bridge. Existing scripts and files in `Assets/` are never overwritten.
 
 ### 2. Automatic Stage Detection (`/start` or `/project-stage-detect`)
 When you launch `/start` in an existing project:
