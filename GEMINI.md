@@ -1,4 +1,4 @@
-# Gemini Code Game Studio (GCGS) — Studio Bridge
+﻿# Gemini Code Game Studio (GCGS)  -  Studio Bridge
 
 This Unity project is powered by **Gemini Code Game Studio**.
 All studio intelligence, 49 specialist roles, 74 workflow skills, design documents, and configurations are encapsulated inside the `gemini-studio/` directory.

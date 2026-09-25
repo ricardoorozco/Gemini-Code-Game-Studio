@@ -1,17 +1,29 @@
 # ====================================================================
-# Gemini Code Game Studio (GCGS) — Project Initializer & Bridge Setup
+# Gemini Code Game Studio (GCGS)  -  Project Initializer & Bridge Setup
 # Run this script whenever you drop 'gemini-studio/' into a Unity project.
-# Usage: powershell -ExecutionPolicy Bypass -File ./gemini-studio/init.ps1
+# Usage:
+#   From project root:  powershell -ExecutionPolicy Bypass -File ./gemini-studio/init.ps1
+#   From gemini-studio: powershell -ExecutionPolicy Bypass -File ./init.ps1
 # ====================================================================
 
 $ErrorActionPreference = "Stop"
-$root = (Get-Item .).FullName
+
+# Determine Unity project root robustly
+$scriptDir = $PSScriptRoot
+if (-not $scriptDir) {
+    $scriptDir = (Get-Item .).FullName
+}
+if ((Split-Path -Leaf $scriptDir) -eq "gemini-studio") {
+    $root = Split-Path -Parent $scriptDir
+} else {
+    $root = (Get-Item .).FullName
+}
 
 Write-Host ">>> Initializing Gemini Code Game Studio in: $root" -ForegroundColor Cyan
 
 # 1. Create root GEMINI.md bridge
 $bridgeContent = @'
-# Gemini Code Game Studio (GCGS) — Studio Bridge
+# Gemini Code Game Studio (GCGS)  -  Studio Bridge
 
 This Unity project is powered by **Gemini Code Game Studio**.
 All studio intelligence, 49 specialist roles, 74 workflow skills, design documents, and configurations are encapsulated inside the `gemini-studio/` directory.
@@ -118,8 +130,11 @@ $rootRules = Join-Path $rootAgents "rules"
 if (-not (Test-Path $rootRules)) {
     New-Item -ItemType Directory -Path $rootRules -Force | Out-Null
 }
-Copy-Item -Path (Join-Path $root "gemini-studio/.agents/rules/*") -Destination $rootRules -Recurse -Force
-Write-Host "  [OK] Synchronized .agents/rules/." -ForegroundColor Green
+$sourceRules = Join-Path $root "gemini-studio/.agents/rules"
+if (Test-Path $sourceRules) {
+    Copy-Item -Path (Join-Path $sourceRules "*") -Destination $rootRules -Recurse -Force
+    Write-Host "  [OK] Synchronized .agents/rules/." -ForegroundColor Green
+}
 
 # 3. Optional: Scaffold recommended Unity architecture if Assets/ exists but Scripts/ does not
 $assetsDir = Join-Path $root "Assets"
@@ -131,66 +146,59 @@ if (Test-Path $assetsDir) {
         # Core
         $coreDir = Join-Path $scriptsDir "Core"
         New-Item -ItemType Directory -Path $coreDir -Force | Out-Null
-        @'
-{
-    "name": "Studio.Core",
-    "rootNamespace": "Studio.Core",
-    "references": [],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
-}
-'@ | Set-Content -Path (Join-Path $coreDir "Studio.Core.asmdef") -Encoding UTF8
+        $coreAsm = @{
+            name = "Studio.Core"
+            rootNamespace = "Studio.Core"
+            references = @()
+            includePlatforms = @()
+            excludePlatforms = @()
+            allowUnsafeCode = $false
+            overrideReferences = $false
+            precompiledReferences = @()
+            autoReferenced = $true
+            defineConstraints = @()
+            versionDefines = @()
+            noEngineReferences = $false
+        }
+        $coreAsm | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $coreDir "Studio.Core.asmdef") -Encoding UTF8
 
         # Gameplay
         $gameplayDir = Join-Path $scriptsDir "Gameplay"
         New-Item -ItemType Directory -Path $gameplayDir -Force | Out-Null
-        @'
-{
-    "name": "Studio.Gameplay",
-    "rootNamespace": "Studio.Gameplay",
-    "references": [
-        "Studio.Core"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
-}
-'@ | Set-Content -Path (Join-Path $gameplayDir "Studio.Gameplay.asmdef") -Encoding UTF8
+        $gameplayAsm = @{
+            name = "Studio.Gameplay"
+            rootNamespace = "Studio.Gameplay"
+            references = @("Studio.Core")
+            includePlatforms = @()
+            excludePlatforms = @()
+            allowUnsafeCode = $false
+            overrideReferences = $false
+            precompiledReferences = @()
+            autoReferenced = $true
+            defineConstraints = @()
+            versionDefines = @()
+            noEngineReferences = $false
+        }
+        $gameplayAsm | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $gameplayDir "Studio.Gameplay.asmdef") -Encoding UTF8
 
         # UI
         $uiDir = Join-Path $scriptsDir "UI"
         New-Item -ItemType Directory -Path $uiDir -Force | Out-Null
-        @'
-{
-    "name": "Studio.UI",
-    "rootNamespace": "Studio.UI",
-    "references": [
-        "Studio.Core"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
-}
-'@ | Set-Content -Path (Join-Path $uiDir "Studio.UI.asmdef") -Encoding UTF8
+        $uiAsm = @{
+            name = "Studio.UI"
+            rootNamespace = "Studio.UI"
+            references = @("Studio.Core")
+            includePlatforms = @()
+            excludePlatforms = @()
+            allowUnsafeCode = $false
+            overrideReferences = $false
+            precompiledReferences = @()
+            autoReferenced = $true
+            defineConstraints = @()
+            versionDefines = @()
+            noEngineReferences = $false
+        }
+        $uiAsm | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $uiDir "Studio.UI.asmdef") -Encoding UTF8
 
         # Data
         $dataDir = Join-Path $scriptsDir "Data"
@@ -200,61 +208,43 @@ if (Test-Path $assetsDir) {
         # Tests
         $testsEditor = Join-Path $assetsDir "Tests/Editor"
         New-Item -ItemType Directory -Path $testsEditor -Force | Out-Null
-        @'
-{
-    "name": "Studio.Tests.Editor",
-    "rootNamespace": "Studio.Tests.Editor",
-    "references": [
-        "Studio.Core",
-        "Studio.Gameplay"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": true,
-    "precompiledReferences": [
-        "nunit.framework.dll"
-    ],
-    "autoReferenced": false,
-    "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
-    ],
-    "versionDefines": [],
-    "noEngineReferences": false
-}
-'@ | Set-Content -Path (Join-Path $testsEditor "Studio.Tests.Editor.asmdef") -Encoding UTF8
+        $testsEditorAsm = @{
+            name = "Studio.Tests.Editor"
+            rootNamespace = "Studio.Tests.Editor"
+            references = @("Studio.Core", "Studio.Gameplay")
+            includePlatforms = @("Editor")
+            excludePlatforms = @()
+            allowUnsafeCode = $false
+            overrideReferences = $true
+            precompiledReferences = @("nunit.framework.dll")
+            autoReferenced = $false
+            defineConstraints = @("UNITY_INCLUDE_TESTS")
+            versionDefines = @()
+            noEngineReferences = $false
+        }
+        $testsEditorAsm | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $testsEditor "Studio.Tests.Editor.asmdef") -Encoding UTF8
 
         $testsRuntime = Join-Path $assetsDir "Tests/Runtime"
         New-Item -ItemType Directory -Path $testsRuntime -Force | Out-Null
-        @'
-{
-    "name": "Studio.Tests.Runtime",
-    "rootNamespace": "Studio.Tests.Runtime",
-    "references": [
-        "Studio.Core",
-        "Studio.Gameplay"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": true,
-    "precompiledReferences": [
-        "nunit.framework.dll"
-    ],
-    "autoReferenced": false,
-    "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
-    ],
-    "versionDefines": [],
-    "noEngineReferences": false
-}
-'@ | Set-Content -Path (Join-Path $testsRuntime "Studio.Tests.Runtime.asmdef") -Encoding UTF8
+        $testsRuntimeAsm = @{
+            name = "Studio.Tests.Runtime"
+            rootNamespace = "Studio.Tests.Runtime"
+            references = @("Studio.Core", "Studio.Gameplay")
+            includePlatforms = @()
+            excludePlatforms = @()
+            allowUnsafeCode = $false
+            overrideReferences = $true
+            precompiledReferences = @("nunit.framework.dll")
+            autoReferenced = $false
+            defineConstraints = @("UNITY_INCLUDE_TESTS")
+            versionDefines = @()
+            noEngineReferences = $false
+        }
+        $testsRuntimeAsm | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $testsRuntime "Studio.Tests.Runtime.asmdef") -Encoding UTF8
 
         Write-Host "  [OK] Generated Assets/Scripts (Core, Gameplay, UI, Data) and Tests with .asmdef." -ForegroundColor Green
     } else {
-        Write-Host "  [INFO] Existing Assets/Scripts detected — preserving existing project structure." -ForegroundColor Gray
+        Write-Host "  [INFO] Existing Assets/Scripts detected  -  preserving existing project structure." -ForegroundColor Gray
     }
 }
 
