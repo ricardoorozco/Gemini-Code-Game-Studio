@@ -114,6 +114,58 @@ For the complete list of 74 workflow skills, see the **[Skills Cheatsheet](gemin
 
 ---
 
+## 🆙 Updating an Existing GCGS Project (Safe Upgrades)
+
+When new updates, skills, or Unity engine references arrive in the master **Gemini Code Game Studio** repository, you can safely update any existing project **without losing your game design, stories, or settings**.
+
+```mermaid
+graph LR
+    Master["Master GCGS Studio"] -->|"update.ps1 (TargetProject)"| Target["Existing Unity Game"]
+    Target -->|"1. Replaces .agents, docs/engine-ref, templates"| Int["Intelligence Updated"]
+    Target -->|"2. Preserves project.yaml, active.md, GDDs, Epics"| Data["Game Data Safe"]
+    Target -->|"3. Auto-runs init.ps1"| Bridge["Bridge Refreshed"]
+```
+
+### What gets updated (Studio Framework & Intelligence):
+- `gemini-studio/.agents/` (49 roles, 74 skills, 13 rules, Windows PowerShell hooks)
+- `gemini-studio/docs/engine-reference/unity/` (Unity 6 LTS, RenderGraph, Addressables, APIs)
+- `gemini-studio/docs/templates/` (39 document templates)
+- `gemini-studio/docs/workflow-catalog.yaml`, `init.ps1`, `update.ps1`, `GEMINI.md`, `README.md`
+- Base registries (`docs/architecture/tr-registry.yaml`, `design/registry/entities.yaml`) seeded only if missing
+
+### What is NEVER touched (Your Game Data):
+- **`gemini-studio/project.yaml`** (preserves your game title, engine settings, and rigor level)
+- **`gemini-studio/production/session-state/active.md`** (preserves your session checkpoint and active task)
+- **`gemini-studio/design/`** (preserves your GDDs, concept documents, and game brief)
+- **`gemini-studio/production/`** (preserves your epics, sprint plans, and QA screenshots/evidence)
+- **`gemini-studio/docs/architecture/`** (preserves your game's Architecture Decision Records)
+
+### Method 1: Automated 1-Click Update (Recommended)
+
+From the root of this master studio repository, execute in PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\gemini-studio\update.ps1 -TargetProject "D:\Path\To\YourUnityProject"
+```
+
+*(You can also run `.\gemini-studio\update.ps1` without arguments and it will prompt you interactively for your target project path).*
+
+The updater will selectively copy all updated intelligence files, seed any new registries without overwriting existing data, and automatically execute `init.ps1` in the target project to refresh root bridges and rules.
+
+### Method 2: Manual Selective Copy
+
+If you prefer to copy files manually:
+1. Replace `gemini-studio/.agents/` in your project with the new version.
+2. Replace `gemini-studio/docs/engine-reference/unity/` and `gemini-studio/docs/templates/`.
+3. Replace `gemini-studio/init.ps1`, `update.ps1`, `GEMINI.md`, and `README.md`.
+4. Copy `gemini-studio/docs/architecture/tr-registry.yaml` and `gemini-studio/design/registry/entities.yaml` if your project doesn't already have them.
+5. In your project root, run:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\gemini-studio\init.ps1
+   ```
+
+---
+
 ## 📂 Repository Contents
 
 ```
@@ -122,8 +174,9 @@ For the complete list of 74 workflow skills, see the **[Skills Cheatsheet](gemin
 │   ├── README.md                  # Studio framework documentation & cheatsheet
 │   ├── project.yaml               # Studio configuration
 │   ├── init.ps1                   # One-click portable setup script
-│   ├── .agents/                   # 49 Agents, 74 Skills, Rules & Windows Hooks
-│   ├── design/                    # GDDs, narrative bibles & mechanics
+│   ├── update.ps1                 # Safe updater script for existing projects
+│   ├── .agents/                   # 49 Agents, 74 Skills, 13 Rules & Windows Hooks
+│   ├── design/                    # GDDs, narrative bibles, and entities.yaml
 │   ├── docs/                      # Architecture, ADRs, templates, engine reference
 │   └── production/                # Sprints, session checkpoint & QA evidence
 ├── GEMINI.md                      # AI studio bridge file

@@ -400,18 +400,21 @@ gemini-studio/                         ← the portable studio
 ├── GEMINI.md                          master studio instructions
 ├── project.yaml                       configuration
 ├── init.ps1                           setup script
+├── update.ps1                         updater script (safely upgrades existing projects)
 ├── .agents/
 │   ├── agents/                        49 role definitions
 │   ├── skills/                        74 skills (one folder each, with SKILL.md)
-│   ├── rules/                         3 path-scoped coding rules
+│   ├── rules/                         13 path-scoped coding rules
 │   ├── hooks/                         validate-command / session-context / validate-file
 │   └── hooks.json                     hook definitions (the one used at runtime is the root .agents/hooks.json created by init.ps1)
-├── design/gdd/                        Game Design Documents and briefs
+├── design/
+│   ├── gdd/                           Game Design Documents and briefs
+│   └── registry/entities.yaml         cross-system entity and formula registry
 ├── docs/
 │   ├── workflow-catalog.yaml          the 7-phase pipeline definition
 │   ├── templates/                     39 document templates
-│   ├── engine-reference/unity/        Unity 6 version notes, deprecated APIs
-│   └── architecture/                  ADRs (empty until you create them)
+│   ├── engine-reference/unity/        Unity 6 version notes, RenderGraph, Addressables, APIs
+│   └── architecture/                  tr-registry.yaml and ADRs
 ├── production/
 │   ├── session-state/active.md        session memory checkpoint
 │   ├── sprints/                       sprint plans
@@ -427,21 +430,62 @@ Your game's work products (GDDs, ADRs, sprint plans, evidence, checkpoint) are c
 
 **39 templates** in `docs/templates/` cover, among others: game concept, game brief, pitch, pillars, GDD, level design, narrative character sheet, faction design, economy model, difficulty curve, player journey, systems index, art bible, sound bible, UX spec, HUD design, interaction pattern library, accessibility requirements, architecture decision record, technical design document, architecture traceability, test plan, test evidence, sprint plan, milestone definition, risk register entry, prototype report, vertical slice report, release checklist, release notes, changelog, incident response, post-mortem, project stage report, session state, and a skill contract template.
 
-**Unity engine reference** (`docs/engine-reference/unity/`): target Unity 6 LTS (6000.0+), C# 10/12, URP, new Input System, UI Toolkit/UGUI; deprecated APIs to avoid (`UnityEngine.Input`, `Resources.Load`, `FindObjectOfType`, UNet, `WWW`).
+**Unity engine reference** (`docs/engine-reference/unity/`): target Unity 6 LTS (6000.0+), C# 10/12, URP RenderGraph, Addressables memory cleanup, new Input System, UI Toolkit/UGUI; deprecated APIs to avoid (`UnityEngine.Input`, `Resources.Load`, `FindObjectOfType`, UNet, `WWW`).
 
 ---
 
-## 16. Known limitations
+## 16. Updating an existing project
+
+When new updates, skills, or engine references arrive in the master **Gemini Code Game Studio** repository, you can update any existing Unity project **without losing your game design, stories, or settings**.
+
+### What gets updated (Studio Framework & Intelligence)
+- `.agents/` (49 agent roles, 74 skills, 13 rules, and hooks)
+- `docs/engine-reference/unity/` (Unity 6 best practices, RenderGraph, Addressables)
+- `docs/templates/` (document templates)
+- `docs/workflow-catalog.yaml`
+- `init.ps1`, `update.ps1`, `GEMINI.md`, `README.md`
+- Seed registries (`tr-registry.yaml`, `entities.yaml`) if not already present
+
+### What is NEVER overwritten (Your Game Data)
+- `project.yaml` (your engine settings, game title, and rigor level)
+- `production/session-state/active.md` (your active task checkpoint)
+- `design/` (your GDDs, concept documents, and game brief)
+- `production/epics/`, `production/sprints/`, `production/qa/evidence/` (your stories and screenshots)
+- `docs/architecture/` (your game ADRs)
+
+### Method A: Automated Update (Recommended)
+
+From the updated master studio repository, run:
+```powershell
+powershell -ExecutionPolicy Bypass -File .\gemini-studio\update.ps1 -TargetProject "D:\Path\To\YourUnityProject"
+```
+Or run `update.ps1` from PowerShell and paste your project path when prompted. The updater will selectively copy the new intelligence files, seed any missing registries, and run `init.ps1` automatically to refresh root bridges and hooks.
+
+### Method B: Manual Selective Copy
+
+If you prefer to copy files manually from the master repository to your project's `gemini-studio/`:
+1. Overwrite `gemini-studio/.agents/` with the new version.
+2. Overwrite `gemini-studio/docs/engine-reference/unity/` and `gemini-studio/docs/templates/`.
+3. Overwrite `gemini-studio/init.ps1`, `update.ps1`, `GEMINI.md`, and `README.md`.
+4. Copy `gemini-studio/docs/architecture/tr-registry.yaml` and `gemini-studio/design/registry/entities.yaml` if they don't already exist.
+5. In your project, run:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\gemini-studio\init.ps1
+   ```
+
+---
+
+## 17. Known limitations
 
 - `validate-file.ps1` does nothing yet (placeholder).
-- `docs/architecture/` starts empty; ADRs appear as you create them.
+- `docs/architecture/` starts with `tr-registry.yaml`; ADRs appear as you create them.
 - Engine reference docs exist only for Unity.
-- `init.ps1` is PowerShell (Windows). Hooks call `powershell.exe`.
+- `init.ps1` and `update.ps1` are PowerShell (Windows). Hooks call `powershell.exe`.
 - Packages are never installed automatically; you install them in the Unity Package Manager.
 
 ---
 
-## 17. Credits and license
+## 18. Credits and license
 
 GCGS is an adaptation of **[Claude Code Game Studios (CCGS)](https://github.com/Donchitos/Claude-Code-Game-Studios)** by **[Donchitos](https://github.com/Donchitos)**. The 49-agent hierarchy, 7-phase pipeline, collaboration protocol and foundational skills/templates come from the original project; this version adapts them to Gemini / Antigravity with native Windows hooks, `.agents/` customizations and Unity 6 LTS scaffolding.
 
