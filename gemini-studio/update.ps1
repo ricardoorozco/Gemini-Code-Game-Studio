@@ -123,19 +123,18 @@ $registries = @(
 
 foreach ($reg in $registries) {
     $src = Join-Path $SourceStudio $reg
-    $dst = Join-Path $targetStudio $reg
+    $rootReg = Join-Path $targetRoot $reg
+    $studioReg = Join-Path $targetStudio $reg
 
-    if (Test-Path $src) {
-        if (-not (Test-Path $dst)) {
-            $parent = Split-Path -Parent $dst
-            if (-not (Test-Path $parent)) {
-                New-Item -ItemType Directory -Path $parent -Force | Out-Null
-            }
-            Copy-Item -Path $src -Destination $dst -Force
-            Write-Host "  [+] Seeded new registry: $reg" -ForegroundColor Cyan
-        } else {
-            Write-Host "  [i] Existing registry preserved: $reg" -ForegroundColor Gray
+    if ((Test-Path $rootReg) -or (Test-Path $studioReg)) {
+        Write-Host "  [i] Existing registry preserved: $reg" -ForegroundColor Gray
+    } else {
+        $parent = Split-Path -Parent $studioReg
+        if (-not (Test-Path $parent)) {
+            New-Item -ItemType Directory -Path $parent -Force | Out-Null
         }
+        Copy-Item -Path $src -Destination $studioReg -Force
+        Write-Host "  [+] Seeded new registry: $reg" -ForegroundColor Cyan
     }
 }
 

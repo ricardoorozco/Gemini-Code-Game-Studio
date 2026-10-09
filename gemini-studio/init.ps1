@@ -59,8 +59,13 @@ All studio intelligence, 49 specialist roles, 74 workflow skills, design documen
    - Visual and gameplay features require runtime observation and a verification screenshot saved in `gemini-studio/production/qa/evidence/`.
 '@
 
-Set-Content -Path (Join-Path $root "GEMINI.md") -Value $bridgeContent -Encoding UTF8
-Write-Host "  [OK] Created root GEMINI.md bridge." -ForegroundColor Green
+$bridgeFile = Join-Path $root "GEMINI.md"
+if (Test-Path $bridgeFile) {
+    Write-Host "  [INFO] Existing root GEMINI.md detected - preserving custom project links." -ForegroundColor Gray
+} else {
+    Set-Content -Path $bridgeFile -Value $bridgeContent -Encoding UTF8
+    Write-Host "  [OK] Created root GEMINI.md bridge." -ForegroundColor Green
+}
 
 # 2. Setup root .agents/ configuration
 $rootAgents = Join-Path $root ".agents"
@@ -136,11 +141,15 @@ if (Test-Path $sourceRules) {
     Write-Host "  [OK] Synchronized .agents/rules/." -ForegroundColor Green
 }
 
-# 3. Optional: Scaffold recommended Unity architecture if Assets/ exists but Scripts/ does not
+# 3. Optional: Scaffold recommended Unity architecture ONLY if Assets/ exists and has NO existing code
 $assetsDir = Join-Path $root "Assets"
 if (Test-Path $assetsDir) {
-    $scriptsDir = Join-Path $assetsDir "Scripts"
-    if (-not (Test-Path $scriptsDir)) {
+    $hasExistingCode = (Test-Path (Join-Path $assetsDir "Scripts")) -or `
+                       (Test-Path (Join-Path $assetsDir "Src")) -or `
+                       (Get-ChildItem -Path $assetsDir -Filter "*.cs" -Recurse -Depth 3 -ErrorAction SilentlyContinue | Select-Object -First 1)
+
+    if (-not $hasExistingCode) {
+        $scriptsDir = Join-Path $assetsDir "Scripts"
         Write-Host "  [+] Blank Assets folder detected. Scaffolding recommended modular architecture..." -ForegroundColor Cyan
 
         # Core
@@ -244,7 +253,7 @@ if (Test-Path $assetsDir) {
 
         Write-Host "  [OK] Generated Assets/Scripts (Core, Gameplay, UI, Data) and Tests with .asmdef." -ForegroundColor Green
     } else {
-        Write-Host "  [INFO] Existing Assets/Scripts detected  -  preserving existing project structure." -ForegroundColor Gray
+        Write-Host "  [INFO] Existing code detected in Assets  -  preserving existing project structure." -ForegroundColor Gray
     }
 }
 
