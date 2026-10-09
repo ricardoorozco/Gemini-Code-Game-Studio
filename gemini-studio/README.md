@@ -1,229 +1,450 @@
 # Gemini Code Game Studio (GCGS)
 
-> **Transform Gemini and Antigravity into a full-scale professional game development studio.**  
-> 49 coordinated specialist roles. 74 progressive skills. Native Windows lifecycle hooks. Built with first-class support for **Unity 6 LTS (C#)**.
+> **Turn Gemini / Antigravity into a structured game development studio for Unity 6 LTS (C#).**
+> 49 specialist roles · 74 workflow skills · 39 document templates · 3 PowerShell safety hooks · one portable folder.
 
 ---
 
 ## Table of Contents
 
-- [Why This Exists](#why-this-exists)
-- [Studio Architecture & Hierarchy](#studio-architecture--hierarchy)
-- [Core Collaboration Protocol](#core-collaboration-protocol)
-- [Quick Start Guide](#quick-start-guide)
-- [Working with Existing / Advanced Projects (Brownfield)](#working-with-existing--advanced-projects-brownfield)
-- [Workflow Skills Cheatsheet](#workflow-skills-cheatsheet)
-- [Non-Negotiable Development Commandments](#non-negotiable-development-commandments)
-- [Directory Structure](#directory-structure)
-- [Configuration & Rigor Modes](#configuration--rigor-modes)
-- [Automated Safety & Lifecycle Hooks](#automated-safety--lifecycle-hooks)
-- [Credits & Acknowledgments](#credits--acknowledgments)
+1. [What is GCGS?](#1-what-is-gcgs)
+2. [Install in 3 steps](#2-install-in-3-steps)
+3. [What `init.ps1` does](#3-what-initps1-does)
+4. [Your first session](#4-your-first-session)
+5. [How the studio works](#5-how-the-studio-works)
+6. [The 74 skills (slash commands)](#6-the-74-skills-slash-commands)
+7. [The 49 roles](#7-the-49-roles)
+8. [Development pipeline (7 phases)](#8-development-pipeline-7-phases)
+9. [Using GCGS on an existing project (brownfield)](#9-using-gcgs-on-an-existing-project-brownfield)
+10. [Mandatory Unity directives](#10-mandatory-unity-directives)
+11. [Coding rules applied automatically](#11-coding-rules-applied-automatically)
+12. [Hooks (automatic safety and context)](#12-hooks-automatic-safety-and-context)
+13. [Configuration (`project.yaml`)](#13-configuration-projectyaml)
+14. [Folder reference](#14-folder-reference)
+15. [Templates and reference docs](#15-templates-and-reference-docs)
+16. [Known limitations](#16-known-limitations)
+17. [Credits and license](#17-credits-and-license)
 
 ---
 
-## Why This Exists
+## 1. What is GCGS?
 
-Building a game solo with AI often suffers from a lack of discipline: models write spaghetti code, hardcode magic numbers, bypass design reviews, and hallucinate architectures that don't scale.
+When you build a game with an AI assistant on its own, it tends to hardcode numbers, skip design, mix UI with game logic and invent architecture as it goes.
 
-**Gemini Code Game Studio** solves this by structuring your session into a professional game studio hierarchy. Instead of an unconstrained generic assistant, you collaborate with **49 specialized agents** (Directors, Department Leads, and Specialists) who enforce separation of concerns, engine best practices, and test verification before closing features.
+GCGS fixes that by giving the assistant a **studio structure**: roles with defined responsibilities, step-by-step workflows (skills), document templates, coding rules and safety hooks. You stay in charge of every decision; the studio provides structure, expertise and quality gates.
 
-**You remain in total control:** The AI provides architecture, domain expertise, and rigorous quality gates, while the user makes all strategic and final calls.
+**GCGS is portable.** The whole studio lives in a single folder, `gemini-studio/`. You copy that folder into a Unity project, run one script, and you are ready. Your game files are never overwritten.
 
 ---
 
-## Studio Architecture & Hierarchy
+## 2. Install in 3 steps
 
-The studio is organized into three distinct tiers:
+**Step 1 — Have a Unity project made with Unity Hub.**
+New or existing. `ProjectSettings/ProjectVersion.txt` must exist (that file is created by Unity Hub).
+
+**Step 2 — Copy the `gemini-studio/` folder into the project root.**
+Copy **only this folder**. Nothing else is needed.
 
 ```
-Tier 1 — Directors (Strategic Vision & Governance)
-  creative-director       technical-director      producer
-
-Tier 2 — Department Leads (Domain Ownership & Quality)
-  game-designer           lead-programmer         art-director
-  audio-director          narrative-director      qa-lead
-  release-manager         localization-lead
-
-Tier 3 — Specialists (Hands-on Implementation)
-  gameplay-programmer     engine-programmer       ai-programmer
-  network-programmer      tools-programmer        ui-programmer
-  systems-designer        level-designer          economy-designer
-  technical-artist        sound-designer          writer
-  world-builder           ux-designer             prototyper
-  performance-analyst     devops-engineer         analytics-engineer
-  security-engineer       qa-tester               accessibility-specialist
-  live-ops-designer       community-manager
-
-  Engine Specialists:
-  ├── Unity 6: unity-specialist, unity-dots, unity-addressables, unity-ui, unity-shaders
-  ├── Godot 4: godot-specialist, godot-gdscript, godot-csharp, godot-gdextension, godot-shaders
-  └── Unreal 5: unreal-specialist, ue-gas, ue-blueprints, ue-replication, ue-umg
+YourUnityProject/
+├── Assets/                # untouched
+├── Packages/              # untouched
+├── ProjectSettings/       # untouched
+└── gemini-studio/         # ← the only thing you copy
 ```
 
----
+**Step 3 — Run the setup script from the project root.**
 
-## Core Collaboration Protocol
-
-Every major design and coding task adheres to the **5-step collaborative cycle**:
-
-1. **Question**: Ask clarifying questions before proposing architectures or mechanics.
-2. **Options**: Present 2–3 viable options with clear pros/cons and trade-offs.
-3. **Decision**: The user selects the path forward.
-4. **Draft**: Show work in progress (code snippets, document sections) before writing to disk.
-5. **Approval**: Always confirm with the user before committing file changes.
-
----
-
-## Quick Start Guide
-
-### Step 1: Create Unity Project via Unity Hub
-Create your new project from **Unity Hub** (selecting your target Unity 6 version and template). Then place/initialize the Gemini Code Game Studio architecture (`.agents/`, `design/`, `docs/`, `project.yaml`) inside that Unity project directory.
-
-### Step 2: Run `/start`
-Type `/start` in the chat. The studio will silently diagnose the repository and guide you:
-- **No idea yet?** → Routes to `/brainstorm open` to explore themes and mechanics.
-- **Vague idea?** → Routes to `/brainstorm [theme]` to structure the concept.
-- **Clear concept?** → Formats the concept into a Lean Brief or full GDD.
-- **Existing project?** → Audits existing scripts and design documents.
-
-### Step 3: Implement Features with `/dev-story`
-Once stories are generated via `/create-stories`, implement them step-by-step with architecture reviews, automated unit tests, and visual verification.
-
----
-
-## Working with Existing / Advanced Projects (Brownfield)
-
-Gemini Code Game Studio is fully equipped to be adopted into **existing, ongoing, or advanced Unity projects**. It does not force you to rewrite code or restart from scratch.
-
-### 1. Ingesting GCGS into Your Existing Project
-Simply copy the single `gemini-studio/` directory into your existing Unity project's root and run `init.ps1`:
+```powershell
+powershell -ExecutionPolicy Bypass -File ./gemini-studio/init.ps1
 ```
-YourExistingUnityProject/
-├── Assets/                          # Your existing scripts, prefabs, models (100% untouched)
-├── Packages/                        # Your existing package manifest (100% untouched)
-├── ProjectSettings/                 # Your existing Unity settings (100% untouched)
-├── GEMINI.md                        # Lightweight studio bridge
-├── .agents/                         # Bridge pointers (skills.json, hooks.json)
-└── gemini-studio/                   # Studio intelligence, GDDs, ADRs & workflows
+
+(It also works from inside `gemini-studio/`: `powershell -ExecutionPolicy Bypass -File ./init.ps1`. The script detects the project root as the parent of `gemini-studio/`.)
+
+After it runs, your project looks like this:
+
 ```
-Run `powershell -ExecutionPolicy Bypass -File ./gemini-studio/init.ps1` to configure the studio bridge. Existing scripts and files in `Assets/` are never overwritten.
+YourUnityProject/
+├── Assets/ Packages/ ProjectSettings/   # untouched
+├── GEMINI.md                            # created by init.ps1 (bridge file)
+├── .agents/                             # created by init.ps1
+│   ├── skills.json                      #   → points to gemini-studio/.agents/skills
+│   ├── hooks.json                       #   → runs scripts in gemini-studio/.agents/hooks/
+│   └── rules/                           #   → copy of gemini-studio/.agents/rules/
+└── gemini-studio/                       # the studio itself
+```
 
-### 2. Automatic Stage Detection (`/start` or `/project-stage-detect`)
-When you launch `/start` in an existing project:
-1. Select **`D) Existing work`**.
-2. The studio analyzes your codebase: if you have 10+ C# scripts, it automatically identifies your project as being in **Production** or **Pre-Production**.
-3. It skips initial concept brainstorming for features that are already built.
+Then open the project in Antigravity (or your Gemini-based editor) and type `/start`.
 
-### 3. Brownfield Audit with `/adopt`
-Run `/adopt` to audit existing artifacts against studio standards:
-- Identifies which systems have code but lack documentation, tests, or clear architecture records.
-- Produces a prioritized, non-blocking migration plan in `docs/adoption-plan-[date].md`.
-
-### 4. Reverse-Engineering Documentation (`/reverse-document`)
-Don't write documentation manually for systems you've already coded:
-- `/reverse-document design Assets/Scripts/Gameplay/Combat`: The **Lead Game Designer** inspects your existing C# combat scripts and reverse-authors a complete GDD detailing rules, state transitions, and formulas.
-- `/reverse-document architecture Assets/Scripts/Core`: The **Technical Director** analyzes core abstractions and generates Architecture Decision Records (ADRs).
-
-### 5. Non-Destructive Expansion (`retrofit` & `/quick-design`)
-- **Retrofit existing GDDs**: Run `/design-system retrofit design/gdd/movement.md` to identify and fill missing edge cases or acceptance criteria without altering your existing notes.
-- **Fast iterations**: For minor mechanics or tuning changes in an established codebase, use `/quick-design` instead of full-scale design documents.
-- **Regression Protection**: Before committing new code, specialists run `/code-review` and create `/regression-suite` tests to ensure existing mechanics stay intact.
+> **Re-running is safe.** `init.ps1` rewrites `GEMINI.md`, `.agents/skills.json`, `.agents/hooks.json` and re-syncs `.agents/rules/`. It never touches your `Assets/` code.
 
 ---
 
-## Workflow Skills Cheatsheet
+## 3. What `init.ps1` does
 
-Type `/` to invoke any of the **74 available skills**:
-
-| Category | Primary Skills | Description |
+| # | Action | Details |
 |---|---|---|
-| **Onboarding** | `/start`, `/setup-engine`, `/help`, `/project-stage-detect` | Initialize project, configure engine, detect stage. |
-| **Design** | `/brainstorm`, `/design-system`, `/map-systems`, `/quick-design` | Conceptualize game, write system GDDs, map dependencies. |
-| **Architecture** | `/create-architecture`, `/architecture-decision` (ADRs), `/create-control-manifest` | Technical blueprints and decision records. |
-| **Production** | `/create-epics`, `/create-stories`, `/sprint-plan`, `/scope-check` | Break systems into bite-sized developer stories. |
-| **Development** | `/dev-story`, `/code-review`, `/tech-debt`, `/story-done` | Implement code, write unit tests, verify features. |
-| **Visual & UI** | `/art-bible`, `/asset-spec`, `/ux-design`, `/ux-review` | Visual identity, HUD design, and UI Toolkit specs. |
-| **QA & Testing** | `/qa-plan`, `/smoke-check`, `/regression-suite`, `/test-evidence-review` | Automated tests and visual verification checklists. |
-| **Release** | `/launch-checklist`, `/changelog`, `/patch-notes`, `/hotfix` | Prepare builds, generate changelogs, manage updates. |
+| 1 | Finds the project root | Parent folder of `gemini-studio/`; otherwise the current directory. |
+| 2 | Writes `GEMINI.md` in the root | A short "bridge" file: navigation links into `gemini-studio/` plus the mandatory Unity directives. |
+| 3 | Writes `.agents/skills.json` | Points the assistant to `gemini-studio/.agents/skills`. |
+| 4 | Writes `.agents/hooks.json` | Registers the 3 hooks (see [section 12](#12-hooks-automatic-safety-and-context)); each looks in `gemini-studio/.agents/hooks/` first. |
+| 5 | Copies rules | `gemini-studio/.agents/rules/*` → `.agents/rules/` so path-scoped rules activate. |
+| 6 | Scaffolds `Assets/Scripts` (conditional) | **Only if** `Assets/` exists **and** `Assets/Scripts/` does not. If `Assets/Scripts/` already exists, it is left alone. |
 
----
-
-## Non-Negotiable Development Commandments
-
-- **Unity Hub Genesis**: Every Unity project must be created via **Unity Hub** (`ProjectSettings/ProjectVersion.txt` must exist).
-- **Strict Package Policy**: The AI will **never** modify `Packages/manifest.json`. The AI will guide you to install needed packages via the **Unity Package Manager** (`Window > Package Manager`), wait for your confirmation, and verify.
-- **Data-Driven Gameplay**: Never hardcode values (speeds, damage, costs). Store gameplay numbers in `ScriptableObject` assets (Unity) or external JSON configs.
-- **Decoupled Architecture**: UI must never own game state. Use events, observables, or message brokers for inter-system communication.
-- **Run and Observe**: A story modifying visuals or gameplay is not complete until it has been tested and visually confirmed. Save screenshots/evidence in `production/qa/evidence/`.
-- **Session Continuity**: `production/session-state/active.md` is the project memory checkpoint. It persists active context across session restarts.
-- **Zero Allocations in Hot Paths**: `Update()` and `FixedUpdate()` loops must produce 0 bytes of heap garbage (`GC.Alloc = 0`).
-
----
-
-## Directory Structure
+**What the scaffold creates** (only for new/blank projects):
 
 ```
-00 Gemini Code Game Studio/
-├── GEMINI.md                          # Master studio instructions
-├── project.yaml                       # Master studio configuration
-├── .gitignore                         # Unity & Studio git ignore patterns
+Assets/
+├── Scripts/
+│   ├── Core/       Studio.Core.asmdef
+│   ├── Gameplay/   Studio.Gameplay.asmdef   (references Studio.Core)
+│   ├── UI/         Studio.UI.asmdef         (references Studio.Core)
+│   └── Data/       .gitkeep                 (for ScriptableObject assets)
+└── Tests/
+    ├── Editor/     Studio.Tests.Editor.asmdef
+    └── Runtime/    Studio.Tests.Runtime.asmdef
+```
+
+---
+
+## 4. Your first session
+
+Type `/start`. The studio first inspects your project silently (engine configured? concept document? source code? prototypes? sprints?) and then asks where you are:
+
+| Your answer | What happens |
+|---|---|
+| **No idea yet** | Routes to `/brainstorm open` to explore themes and mechanics. |
+| **Vague idea** | Asks for your theme/inspirations, then `/brainstorm [hint]`. |
+| **Clear concept** | Either formalize it with `/brainstorm`, or go straight to `/setup-engine` + `/design-system`. |
+| **Existing work** | Reports what it found; runs `/setup-engine` if needed; suggests briefs or retrofitting GDDs. |
+
+It then asks you to choose a **rigor level** (`minimal`, `standard`, `full`), records it in `project.yaml`, updates the session checkpoint and tells you the single next command to run.
+
+Lost at any point? Type `/help` — it tells you what to do next based on the project state.
+
+---
+
+## 5. How the studio works
+
+### Collaboration protocol
+Every significant task follows five steps, and nothing is written without your approval:
+
+1. **Question** — the studio asks clarifying questions first.
+2. **Options** — 2–3 options with pros/cons.
+3. **Decision** — you choose.
+4. **Draft** — it shows the work in progress before saving.
+5. **Approval** — you confirm before files are written or stories closed.
+
+(`project.yaml` → `modes.automation` controls how much it asks: `collaborative` always asks.)
+
+### Roles delegate by tier
+Directors set vision, leads own a department, specialists implement. Skills like `/team-combat` or `/team-qa` coordinate several roles on one goal.
+
+### Session memory
+`gemini-studio/production/session-state/active.md` is the project's memory checkpoint. A hook injects the current task from it into each invocation, so context survives restarts.
+
+---
+
+## 6. The 74 skills (slash commands)
+
+Type the command in the chat. Descriptions below are summaries of each skill's purpose.
+
+### Onboarding and navigation
+| Skill | Purpose |
+|---|---|
+| `/start` | Guided onboarding; diagnoses project state and routes you. |
+| `/help` | "What should I do next?" |
+| `/onboard` | Onboarding doc for a new contributor or agent. |
+| `/setup-engine` | Configure engine, version and code root in `project.yaml`. |
+| `/settings` | View or change project config. |
+| `/project-stage-detect` | Detect development stage, identify gaps, recommend next steps. |
+| `/adopt` | Brownfield audit: do existing artifacts actually work? Numbered migration plan. |
+| `/gate-check` | Ready to advance to the next phase? PASS / CONCERNS / FAIL. Advisory only. |
+
+### Concept and design
+| Skill | Purpose |
+|---|---|
+| `/brainstorm` | Guided concept ideation (MDA, player psychology, creative director input). |
+| `/prototype` | Throwaway concept prototype → PROCEED / PIVOT / KILL. |
+| `/art-bible` | Author the visual identity document. |
+| `/map-systems` | Decompose the concept into systems, map dependencies, create the systems index. |
+| `/design-system` | Section-by-section GDD for one system (mechanics, formulas, acceptance criteria). |
+| `/quick-design` | Lightweight spec for small changes; skips a full GDD. |
+| `/design-review` | Review one design document for completeness and implementability. |
+| `/review-all-gdds` | Cross-GDD review: contradictions, dominant strategies, pillar drift. |
+| `/consistency-check` | Scan GDDs for cross-document conflicts. |
+| `/propagate-design-change` | A GDD changed — find ADRs that are now stale. |
+| `/balance-check` | Find balance outliers and degenerate strategies in formulas/data. |
+| `/content-audit` | Planned content (GDDs) vs. what is actually implemented. |
+
+### Architecture
+| Skill | Purpose |
+|---|---|
+| `/create-architecture` | Architecture blueprint before code is written. |
+| `/architecture-decision` | Create an ADR (context, alternatives, consequences). |
+| `/architecture-review` | Traceability matrix GDD requirements → ADRs; finds gaps and conflicts. |
+| `/create-control-manifest` | Flat must-do / never-do rules per system, extracted from accepted ADRs. |
+
+### UX and visual
+| Skill | Purpose |
+|---|---|
+| `/ux-design` | UX spec for a screen, flow or HUD. |
+| `/ux-review` | Validate UX spec / HUD design (accessibility, GDD alignment). |
+| `/asset-spec` | Per-asset visual specs plus AI generation prompts. |
+| `/asset-audit` | Audit assets against naming, size and format standards. |
+
+### Production and planning
+| Skill | Purpose |
+|---|---|
+| `/create-epics` | Turn GDDs + architecture into epics (one per module). |
+| `/create-stories` | Break an epic/GDD into small implementable stories with acceptance criteria. |
+| `/story-readiness` | Is a story implementation-ready? READY / NEEDS WORK / BLOCKED. |
+| `/sprint-plan` | New or updated sprint plan. |
+| `/sprint-status` | Quick sprint snapshot. |
+| `/estimate` | Effort estimate with confidence levels. |
+| `/scope-check` | Detect scope creep against the original plan. |
+| `/milestone-review` | Milestone progress, risk, go/no-go. |
+| `/retrospective` | Sprint or milestone retrospective. |
+| `/vertical-slice` | End-to-end build to validate the full loop before Production. |
+
+### Development and code quality
+| Skill | Purpose |
+|---|---|
+| `/dev-story` | Implement a story: architecture proposal, decoupled code, unit tests, run-and-observe verification. |
+| `/story-done` | End-of-story review: criteria, GDD/ADR deviations, code review, status update. |
+| `/code-review` | Architectural review (standards, SOLID, testability, performance). |
+| `/tech-debt` | Track and prioritize technical debt. |
+| `/perf-profile` | Find bottlenecks, measure against budgets. |
+| `/reverse-document` | Generate missing design/architecture docs from existing code. |
+
+### QA and testing
+| Skill | Purpose |
+|---|---|
+| `/qa-plan` | QA plan for a sprint (Logic / Integration / Visual / UI classification). |
+| `/test-setup` | Scaffold the test framework and CI (once, before the first sprint). |
+| `/test-helpers` | Generate engine-specific test helper libraries. |
+| `/smoke-check` | Critical-path smoke gate before QA hand-off. |
+| `/regression-suite` | Map test coverage to GDD critical paths; find untested fixed bugs. |
+| `/test-evidence-review` | Quality review of tests and evidence. |
+| `/test-flakiness` | Find flaky tests from CI logs. |
+| `/soak-test` | Extended-play test protocol (leaks, fatigue, edge cases). |
+| `/playtest-report` | Structured playtest report. |
+| `/bug-report` | Structured bug report or code analysis for potential bugs. |
+| `/bug-triage` | Re-prioritize open bugs, surface trends. |
+| `/security-audit` | Save tampering, cheats, network exploits, data exposure. |
+
+### Release and live operations
+| Skill | Purpose |
+|---|---|
+| `/release-checklist` | Pre-release verification. |
+| `/launch-checklist` | Launch readiness across all departments. |
+| `/changelog` | Changelog from git commits and sprint data. |
+| `/patch-notes` | Player-facing patch notes. |
+| `/hotfix` | Emergency fix with audit trail. |
+| `/day-one-patch` | Focused patch for known issues after gold master. |
+| `/localize` | Localization pipeline (string extraction, review, VO, RTL). |
+
+### Team orchestration (multi-role)
+| Skill | Roles coordinated |
+|---|---|
+| `/team-combat` | game-designer, gameplay-programmer, ai-programmer, technical-artist, sound-designer, qa-tester |
+| `/team-level` | level-designer, narrative-director, world-builder, art-director, systems-designer, qa-tester |
+| `/team-narrative` | narrative-director, writer, world-builder, level-designer |
+| `/team-audio` | audio-director, sound-designer, technical-artist, gameplay-programmer |
+| `/team-ui` | UX pipeline: authoring, visual design, implementation, review, polish |
+| `/team-polish` | performance-analyst, technical-artist, sound-designer, qa-tester |
+| `/team-qa` | qa-lead, qa-tester: full testing cycle |
+| `/team-release` | release-manager, qa-lead, devops-engineer, producer |
+| `/team-live-ops` | live-ops-designer, economy-designer, analytics-engineer, community-manager, writer |
+
+### Maintaining the studio itself
+| Skill | Purpose |
+|---|---|
+| `/skill-test` | Validate skill files (static linter, spec, rubric, audit). |
+| `/skill-improve` | Improve a skill via a test-fix-retest loop. |
+
+---
+
+## 7. The 49 roles
+
+Role definitions live in `gemini-studio/.agents/agents/` (one `.md` per role).
+
+**Tier 1 — Directors:** creative-director · technical-director · producer
+
+**Tier 2 — Leads:** game-designer · lead-programmer · art-director · audio-director · narrative-director · qa-lead · release-manager · localization-lead
+
+**Tier 3 — Specialists:** gameplay-programmer · engine-programmer · ai-programmer · network-programmer · tools-programmer · ui-programmer · systems-designer · level-designer · economy-designer · technical-artist · sound-designer · writer · world-builder · ux-designer · prototyper · performance-analyst · devops-engineer · analytics-engineer · security-engineer · qa-tester · accessibility-specialist · live-ops-designer · community-manager
+
+**Engine specialists:**
+- **Unity:** unity-specialist · unity-dots-specialist · unity-addressables-specialist · unity-ui-specialist · unity-shader-specialist
+- **Godot:** godot-specialist · godot-gdscript-specialist · godot-csharp-specialist · godot-gdextension-specialist · godot-shader-specialist
+- **Unreal:** unreal-specialist · ue-gas-specialist · ue-blueprint-specialist · ue-replication-specialist · ue-umg-specialist
+
+> GCGS is configured and tested for **Unity**. Godot and Unreal roles are included from the original framework but this setup targets Unity.
+
+---
+
+## 8. Development pipeline (7 phases)
+
+Defined in `docs/workflow-catalog.yaml`, which `/help` and `/gate-check` read to know where you are. Each phase has required and optional steps; gates are **advisory** — you always decide whether to advance.
+
+```
+Concept → Systems Design → Technical Setup → Pre-Production → Production → Polish → Release
+```
+
+Typical path through the first phases:
+
+```
+/brainstorm → /setup-engine → /art-bible → /map-systems
+   → /design-system (per system) → /design-review → /review-all-gdds
+   → /create-architecture → /architecture-decision → /create-epics → /create-stories
+   → /sprint-plan → /dev-story → /story-done → /smoke-check → /gate-check
+```
+
+---
+
+## 9. Using GCGS on an existing project (brownfield)
+
+GCGS is non-intrusive: no code, scenes or packages are overwritten.
+
+1. Copy `gemini-studio/` and run `init.ps1` (it leaves an existing `Assets/Scripts/` untouched).
+2. `/start` → choose **Existing work**. The studio scans your code and estimates your stage.
+3. `/adopt` — audits what you have against studio standards and produces a prioritized, non-blocking migration plan.
+4. `/reverse-document design Assets/Scripts/Gameplay/Combat` — writes a GDD from your existing code.
+5. `/reverse-document architecture Assets/Scripts/Core` — drafts ADRs from your existing architecture.
+6. Continue with `/quick-design`, `/create-stories`, `/dev-story`. Before committing, `/code-review` and `/regression-suite` protect existing mechanics.
+
+---
+
+## 10. Mandatory Unity directives
+
+These are enforced by `GEMINI.md`, the rules and the skills:
+
+1. **Unity Hub genesis** — the project is created from Unity Hub. The studio verifies `ProjectSettings/ProjectVersion.txt` before writing code.
+2. **No direct package manifest edits** — the AI never edits `Packages/manifest.json`. It tells you the exact package name, waits for you to install it in `Window > Package Manager`, then verifies read-only.
+3. **Data-driven gameplay** — all gameplay values live in `ScriptableObject` assets (`Assets/Scripts/Data/`).
+4. **Decoupled architecture** — UI views never own game state; communication is through C# events/observables.
+5. **Run and observe** — visual/gameplay features are not done until tested at runtime; save a screenshot in `gemini-studio/production/qa/evidence/`.
+
+---
+
+## 11. Coding rules applied automatically
+
+Rules in `.agents/rules/` are scoped by path, so they apply only where relevant.
+
+| Rule file | Applies to | Highlights |
+|---|---|---|
+| `engine-standards.md` | `Assets/Scripts/**` | `[SerializeField] private` over public fields; `.asmdef` per subsystem; cache `GetComponent` in `Awake/OnEnable`; no `SendMessage`/`BroadcastMessage`; naming (`PascalCase`, `_camelCase`, `IInterface`). |
+| `gameplay-code.md` | `Assets/Scripts/Gameplay/**` | No magic numbers; `Time.deltaTime` / `fixedDeltaTime`; gameplay never calls UI directly; zero allocations in `Update`/`FixedUpdate` (no LINQ, no string concat, `RaycastNonAlloc`); object pooling. |
+| `ui-code.md` | `Assets/Scripts/UI/**` | Views are read-only observers of state; no hardcoded player-facing strings (use Localization); keyboard/gamepad/mouse navigation; separate dynamic/static Canvases; disable unneeded Raycast Targets. |
+
+---
+
+## 12. Hooks (automatic safety and context)
+
+Registered in `.agents/hooks.json` by `init.ps1`. They run as PowerShell scripts from `gemini-studio/.agents/hooks/`.
+
+| Hook | Event | Script | Behavior |
+|---|---|---|---|
+| `gcgs-safety-gate` | Before `run_command` | `validate-command.ps1` | Asks for confirmation on `git push --force`, `git reset --hard`, `git clean -f`, and deleting `.git`. Also asks when a `git commit` message is just `wip`, `fix`, `update` or `temp` (suggests referencing a story ID). Falls back to *allow* if it cannot parse input. |
+| `gcgs-session-checkpoint` | Before every model invocation | `session-context.ps1` | Reads `**Current task:**` from `production/session-state/active.md` and injects `GCGS Active Task: …` into the context. |
+| `gcgs-asset-validator` | After file writes/edits | `validate-file.ps1` | Currently a placeholder: returns `{}` (no validation performed yet). |
+
+---
+
+## 13. Configuration (`project.yaml`)
+
+```yaml
+engine:
+  name: Unity
+  version: "6000.0"        # Unity 6 LTS
+  language: "C#"
+  code_root: "Assets/Scripts"
+
+modes:
+  rigor: minimal            # minimal | standard | full
+  automation: collaborative # collaborative | semi-autonomous | autonomous
+  review_mode: solo         # solo | lean | full
+
+testing:
+  strict: false             # true = missing test/visual evidence blocks progression
+
+directories:                # all relative to the Unity project root
+  studio_root: "gemini-studio"
+  code: "Assets/Scripts"
+  design: "gemini-studio/design"
+  docs: "gemini-studio/docs"
+  production: "gemini-studio/production"
+  tests: "Assets/Tests"
+  evidence: "gemini-studio/production/qa/evidence"
+```
+
+**Rigor levels**
+
+| Level | Intended for | Effect |
+|---|---|---|
+| `minimal` (default) | Game jams, prototypes | 1-page lean brief, solo lead review, fast iteration. |
+| `standard` | Indie production | 5 required GDD sections, ADRs, standard QA evidence. |
+| `full` | Commercial release | 8 required GDD sections, all director reviews, full regression suite. |
+
+**Automation:** `collaborative` always asks before writing; `semi-autonomous` and `autonomous` ask less.
+**Review mode:** `solo` (lead only) · `lean` (one director) · `full` (all directors).
+
+---
+
+## 14. Folder reference
+
+```
+gemini-studio/                         ← the portable studio
+├── README.md                          this file
+├── GEMINI.md                          master studio instructions
+├── project.yaml                       configuration
+├── init.ps1                           setup script
 ├── .agents/
-│   ├── hooks.json                     # Native PowerShell lifecycle hooks
-│   ├── hooks/                         # Validation and context injection scripts
-│   ├── agents/                        # 49 Role definitions & guidelines
-│   ├── skills/                        # 74 Slash skills (SKILL.md)
-│   └── rules/                         # Path-scoped coding standards
-├── Assets/                            # Unity game code & assets
-│   ├── Scripts/                       # C# source code (Core, Gameplay, UI, Data)
-│   └── Tests/                         # NUnit automated tests (Editor & Runtime)
-├── design/gdd/                        # Game Design Documents (GDDs) & briefs
+│   ├── agents/                        49 role definitions
+│   ├── skills/                        74 skills (one folder each, with SKILL.md)
+│   ├── rules/                         3 path-scoped coding rules
+│   ├── hooks/                         validate-command / session-context / validate-file
+│   └── hooks.json                     hook definitions (the one used at runtime is the root .agents/hooks.json created by init.ps1)
+├── design/gdd/                        Game Design Documents and briefs
 ├── docs/
-│   ├── templates/                     # 39 Standardized document templates
-│   ├── engine-reference/unity/        # Unity 6 LTS reference & best practices
-│   └── architecture/                  # Architecture Decision Records (ADRs)
-└── production/
-    ├── session-state/active.md        # Session memory checkpoint
-    └── qa/evidence/                   # Visual test evidence (screenshots & logs)
+│   ├── workflow-catalog.yaml          the 7-phase pipeline definition
+│   ├── templates/                     39 document templates
+│   ├── engine-reference/unity/        Unity 6 version notes, deprecated APIs
+│   └── architecture/                  ADRs (empty until you create them)
+├── production/
+│   ├── session-state/active.md        session memory checkpoint
+│   ├── sprints/                       sprint plans
+│   └── qa/evidence/                   screenshots, logs, test evidence
+└── prototypes/                        isolated experimental mechanics
 ```
 
----
-
-## Configuration & Rigor Modes
-
-The file [`project.yaml`](project.yaml) controls studio behavior:
-
-- **`modes.rigor`**:
-  - `minimal` (Default): Game Jam speed. 1-page lean brief (`design/game-brief.md`), solo lead review, fast iteration.
-  - `standard`: Balanced production. 5 required GDD sections, ADRs, standard QA evidence.
-  - `full`: Commercial release. 8 required GDD sections, all director reviews, full regression suite.
-- **`modes.automation`**: `collaborative` (always ask before write) | `semi-autonomous` | `autonomous`.
+Your game's work products (GDDs, ADRs, sprint plans, evidence, checkpoint) are created **inside the `gemini-studio/` copy in your project**, so each Unity project has its own independent state.
 
 ---
 
-## Automated Safety & Lifecycle Hooks
+## 15. Templates and reference docs
 
-Configured in [`.agents/hooks.json`](.agents/hooks.json) with native PowerShell scripts:
+**39 templates** in `docs/templates/` cover, among others: game concept, game brief, pitch, pillars, GDD, level design, narrative character sheet, faction design, economy model, difficulty curve, player journey, systems index, art bible, sound bible, UX spec, HUD design, interaction pattern library, accessibility requirements, architecture decision record, technical design document, architecture traceability, test plan, test evidence, sprint plan, milestone definition, risk register entry, prototype report, vertical slice report, release checklist, release notes, changelog, incident response, post-mortem, project stage report, session state, and a skill contract template.
 
-1. **`validate-command.ps1` (`PreToolUse`)**: Blocks destructive git operations (force push, reset hard) and validates commit messages.
-2. **`session-context.ps1` (`PreInvocation`)**: Automatically injects current task context from `active.md` into the model prompt.
-3. **`validate-file.ps1` (`PostToolUse`)**: Enforces file modification quality checks.
+**Unity engine reference** (`docs/engine-reference/unity/`): target Unity 6 LTS (6000.0+), C# 10/12, URP, new Input System, UI Toolkit/UGUI; deprecated APIs to avoid (`UnityEngine.Input`, `Resources.Load`, `FindObjectOfType`, UNet, `WWW`).
 
 ---
 
-## Credits & Acknowledgments
+## 16. Known limitations
 
-**Gemini Code Game Studio (GCGS)** is an adaptation and evolution of the outstanding open-source project **[Claude Code Game Studios (CCGS)](https://github.com/Donchitos/Claude-Code-Game-Studios)**, created by **[Donchitos](https://github.com/Donchitos)**.
-
-- **Original Architecture & Concept**: The 49-agent studio hierarchy, 7-phase game development pipeline, collaboration protocol (*Question → Options → Decision → Draft → Approval*), and foundational skills/templates were originally designed and engineered by Donchitos for Claude Code.
-- **Gemini / Antigravity Evolution**: Adapted to Google DeepMind's Gemini and Antigravity ecosystem with native Windows PowerShell lifecycle hooks, `.agents/` customizations, progressive disclosure, and first-class Unity 6 LTS scaffolding.
-- **Support the Original Creator**: If you find this studio architecture valuable, please consider supporting Donchitos:
-  - ☕ [Buy Me a Coffee](https://www.buymeacoffee.com/donchitos3)
-  - 💖 [GitHub Sponsors](https://github.com/sponsors/Donchitos)
-  - ⭐ [Claude Code Game Studios on GitHub](https://github.com/Donchitos/Claude-Code-Game-Studios)
+- `validate-file.ps1` does nothing yet (placeholder).
+- `docs/architecture/` starts empty; ADRs appear as you create them.
+- Engine reference docs exist only for Unity.
+- `init.ps1` is PowerShell (Windows). Hooks call `powershell.exe`.
+- Packages are never installed automatically; you install them in the Unity Package Manager.
 
 ---
 
-## License
+## 17. Credits and license
 
-This project is open-source under the [MIT License](LICENSE), honoring the original licensing of Claude Code Game Studios.
+GCGS is an adaptation of **[Claude Code Game Studios (CCGS)](https://github.com/Donchitos/Claude-Code-Game-Studios)** by **[Donchitos](https://github.com/Donchitos)**. The 49-agent hierarchy, 7-phase pipeline, collaboration protocol and foundational skills/templates come from the original project; this version adapts them to Gemini / Antigravity with native Windows hooks, `.agents/` customizations and Unity 6 LTS scaffolding.
 
+If you find it valuable, please support the original creator: [Buy Me a Coffee](https://www.buymeacoffee.com/donchitos3) · [GitHub Sponsors](https://github.com/sponsors/Donchitos)
+
+Licensed under the [MIT License](LICENSE).

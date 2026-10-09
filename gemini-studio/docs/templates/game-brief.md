@@ -39,3 +39,5 @@ thinking and cuts ceremony), and lean/agile GDD practice.
 **Who it's for / what they feel:** [One line: the player and the feeling. e.g. "solo puzzle fans who want a cozy 20-minute sitting."]
 
 **Art & audio direction:** [One line of aesthetic intent — drives asset choices. e.g. "flat pastel vector art, lo-fi ambient."]
+
+**Reference game:** [One shipped game this is closest to, and the ~10% of it the MVP keeps. e.g. "Vampire Survivors — the auto-attack loop on one map; no meta-progression." Scoping against a real game is the fastest honest MVP check.]

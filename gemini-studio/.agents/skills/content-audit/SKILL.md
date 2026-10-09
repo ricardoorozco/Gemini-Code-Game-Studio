@@ -150,18 +150,20 @@ the two happened — a reader cannot tell from a green result.
 For each content type found in Phase 1, scan the relevant directories to count
 what has been implemented. Use Glob and Grep to locate files.
 
+**On Unity, content lives under `Assets/`** (case-sensitive on Unix/macOS) and rarely in a `data/` folder. So on Unity:
+- Every `assets/…` glob below also runs under `Assets/`, without requiring a `data/` segment.
+- For items, check `Assets/**/items/**`, `Assets/**/Items/**`, and `Assets/**/*Item*.asset`.
+- Data files include `.asset` (ScriptableObjects), `.prefab`, `.json`.
+> *Skipping this finds zero items, abilities, quests, and dialogue on Unity projects and falsely reports them as NOT STARTED.*
+
 **Levels / Areas / Maps:**
-- Glob `assets/**/*.tscn`, `assets/**/*.unity`, `assets/**/*.umap`
-- Glob the **code root** for scene files: `*.tscn` (Godot), `*.unity` (Unity), `*.umap` (Unreal). Resolve the root per `.claude/docs/code-root-resolution.md`. **If the code root is unresolved, report `NOT ASSESSED — code root unresolved` rather than zero hits.**
-- Look for scene files in subdirectories named `levels/`, `areas/`, `maps/`,
-  `worlds/`, `stages/`
-- Count unique files that appear to be level/scene definitions (not UI scenes)
+- Glob `Assets/**/*.unity`, `assets/**/*.tscn`, `assets/**/*.umap`
+- Look for scene files in subdirectories named `levels/`, `areas/`, `maps/`, `worlds/`, `stages/`
+- Count unique scene files (not UI scenes)
 
 **Enemies / Characters / NPCs:**
-- Glob `assets/data/**/enemies/**`, `assets/data/**/characters/**`
-- Glob `<code root>/**/enemies/**`, `<code root>/**/characters/**`
-- Look for `.json`, `.tres`, `.asset`, `.yaml` data files defining entity stats
-- Look for scene/prefab files in character subdirectories
+- Glob `Assets/**/Enemies/**`, `Assets/**/Characters/**`, `assets/data/**/enemies/**`
+- Look for `.asset` (ScriptableObjects), `.prefab`, `.json` data files defining entity stats
 
 **Items / Equipment / Loot:**
 - Glob `assets/data/**/items/**`, `assets/data/**/equipment/**`,

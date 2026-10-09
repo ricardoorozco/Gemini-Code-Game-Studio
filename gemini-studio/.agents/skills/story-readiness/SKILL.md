@@ -74,7 +74,7 @@ coverage target. Distinct axis from `workflow`.
 
 ## 1. Parse Arguments
 
-**Scope:** `$ARGUMENTS[0]` (blank = ask user via AskUserQuestion)
+**Scope:** `$ARGUMENTS` (blank = ask user via AskUserQuestion)
 
 - **Specific path** (e.g., `/story-readiness production/epics/combat/story-001-basic-attack.md`):
   validate that single story file.

@@ -66,12 +66,14 @@ read that file directly.
 **If no argument is provided:**
 
 1. Check `production/session-state/active.md` for the currently active story.
-2. If not found there, read the most recent file in `production/sprints/` and
+2. If not found there, read the most recent file in `production/sprints/` (if it exists) and
    look for stories marked IN PROGRESS.
-3. If multiple in-progress stories are found, use `AskUserQuestion`:
+3. If `production/sprints/` is empty or does not exist (e.g. `workflow: minimal`),
+   glob `production/epics/**/*.md` and look for stories marked `Status: In Progress`.
+4. If multiple in-progress stories are found, use `AskUserQuestion`:
    - "Which story are we completing?"
    - Options: list the in-progress story file names.
-4. If no story can be found, ask the user to provide the path.
+5. If no story can be found, ask the user to provide the path.
 
 ---
 
@@ -277,16 +279,18 @@ required path. Use `Glob` to check that exact path first, then search
 playtest record referencing this story.
 If none found: flag at the resolved gate level (same rule as Logic).
 
-**For Visual/Feel and UI stories**: glob `production/qa/evidence/` for both an
-evidence doc referencing this story and a retained screenshot for it (`*.png`,
-`*.jpg`, `*.gif`).
-- If neither is found: flag at the resolved gate level — "No visual evidence found. Capture a screenshot of each screen or effect this story touched, save it under `production/qa/evidence/`, create `production/qa/evidence/[story-slug]-evidence.md` using the test-evidence template, and obtain sign-off before final closure."
-- If the evidence doc exists but no screenshot is retained beside it: flag at the resolved gate level — "Evidence doc found at `[path]` but no screenshot is retained. A described check is an assertion, not evidence — capture the screen and save the image under `production/qa/evidence/` before final closure."
-- If found: read the file and check the sign-off table for unchecked boxes. Grep for lines matching `| .* | .* | .* | \[ \] Approved` (a sign-off row with an unchecked checkbox). If any unchecked sign-off rows are found: flag at the resolved gate level — "Evidence file found at `[path]` but [N] sign-off(s) are still pending (shown as `[ ] Approved` in the sign-off table). Obtain required sign-offs before final closure. Note: for solo developers, all roles may be signed off by the same person."
-- If the doc, the screenshot and all `[x] Approved` sign-off rows are present: note "Evidence doc and retained screenshot found, all sign-offs complete — gate satisfied."
+**For Visual/Feel and UI stories**: glob `production/qa/evidence/` for a retained screenshot for it (`*.png`, `*.jpg`, `*.gif`) and (at `qa.level: standard` or `full`) an evidence doc referencing this story.
+- **At `qa.level: minimal`**: The retained screenshot alone satisfies the UI gate.
+  - If a screenshot exists under `production/qa/evidence/`: note "Retained screenshot found — visual gate satisfied."
+  - If no screenshot exists: flag as BLOCKING — "No visual evidence found. Capture a screenshot of each screen or effect this story touched and save it under `production/qa/evidence/` before final closure. Visual verification is never waived at minimal rigor."
+- **At `qa.level: standard` or `full`**:
+  - If neither is found: flag at the resolved gate level — "No visual evidence found. Capture a screenshot of each screen or effect this story touched, save it under `production/qa/evidence/`, create `production/qa/evidence/[story-slug]-evidence.md` using the test-evidence template, and obtain sign-off before final closure."
+  - If the evidence doc exists but no screenshot is retained beside it: flag at the resolved gate level — "Evidence doc found at `[path]` but no screenshot is retained. A described check is an assertion, not evidence — capture the screen and save the image under `production/qa/evidence/` before final closure."
+  - If found: read the file and check the sign-off table for unchecked boxes. Grep for lines matching `| .* | .* | .* | \[ \] Approved` (a sign-off row with an unchecked checkbox). If any unchecked sign-off rows are found: flag at the resolved gate level — "Evidence file found at `[path]` but [N] sign-off(s) are still pending (shown as `[ ] Approved` in the sign-off table). Obtain required sign-offs before final closure. Note: for solo developers, all roles may be signed off by the same person."
+  - If the doc, the screenshot and all `[x] Approved` sign-off rows are present: note "Evidence doc and retained screenshot found, all sign-offs complete — gate satisfied."
 
 The retained image **is** the `Run result: OBSERVED` from `/dev-story` Phase 6
-step 4 (`.claude/docs/run-and-observe.md`); its absence means the run was
+step 4 (`.claude/docs/run-and-observe.md` / Studio Run and Observe directive); its absence means the run was
 `NOT VERIFIED` or never happened, and the flag above is the consequence. The
 run is not waived at `qa.level: minimal`.
 
@@ -612,6 +616,8 @@ Confirm in conversation: "Session state updated."
 
 After completion, help the developer keep momentum:
 
+**If `production/sprints/` exists and has sprint files:**
+
 1. Read the current sprint plan from `production/sprints/`.
 2. Find stories that are:
    - Status: READY or NOT STARTED
@@ -651,6 +657,27 @@ If there are Should Have stories still unstarted, surface them alongside the clo
 
 If no more stories are ready but Must Have stories are still In Progress (not Complete):
 "No more stories ready to start — [N] Must Have stories still in progress. Continue implementing those before sprint close-out."
+
+**If no sprint plan exists (e.g. `workflow: minimal`):**
+
+1. Scan `production/epics/**/*.md` for all story files.
+2. Find the next story in the build order where `Status: Ready` or `Status: NOT STARTED`.
+3. If an uncompleted story is found:
+   Present:
+   ```
+   ### Next Up
+   The following story is ready to implement:
+   - [Story name] (`[story-file-path]`)
+
+   Run `/dev-story [story-file-path]` to implement it.
+   ```
+   *(Note: do not require `/story-readiness` or sprint ceremonies at minimal rigor).*
+4. If all stories in `production/epics/` are `Status: Complete`:
+   ```
+   ### Build Order Complete!
+   All MVP stories in the build order are Complete.
+   Run `/smoke-check` to verify the game build end-to-end.
+   ```
 
 ---
 

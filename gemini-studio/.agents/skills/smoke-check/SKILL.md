@@ -140,23 +140,38 @@ path for your test framework."
 Unity **can** run tests headlessly via shell. Do not skip to reading artifacts.
 
 First confirm the Unity Test Framework is installed. A project without it does
-not fail cleanly — it **hangs** until something kills it, which is the
-observation the old "Unity cannot test headlessly" advice was generalised from:
-```bash
-grep -q 'com.unity.test-framework' Packages/manifest.json && echo present || echo ABSENT
+not fail cleanly — it **hangs** until something kills it:
+```powershell
+Select-String -Path "Packages/manifest.json" -Pattern "com.unity.test-framework" -Quiet
 ```
 If ABSENT, report `NOT ASSESSED — Unity Test Framework not installed` and
-give the one-line fix (add `com.unity.test-framework` to `Packages/manifest.json`).
-**Do not fall through to reading stale artifacts** — an unknown-age XML
-reported as a pass is worse than no gate.
+instruct the user to install it via Unity Package Manager (`Window > Package Manager`).
+**Do not fall through to reading stale artifacts** — an unknown-age XML reported as a pass is worse than no gate.
 
-If present, run the suite with an explicit timeout:
-```bash
-timeout 900 "<Unity.exe>" -batchmode -runTests -projectPath . -testPlatform EditMode -testResults test-results/results.xml
+If present, delete old result files first (so a compile error which produces no file isn't masked by a past pass):
+```powershell
+Remove-Item -Path "test-results/*.xml" -Force -ErrorAction SilentlyContinue
 ```
-Parse `test-results/results.xml` for the `passed` and `failed` counts on the
-`<test-run>` element. **A timeout (exit 124) is a gate FAILURE, never a pass** —
-the run never completed and nothing was verified.
+
+Run Edit Mode tests with an explicit timeout:
+```powershell
+& "<Unity editor full path>" -batchmode -runTests -projectPath . -testPlatform EditMode -testResults test-results/editmode.xml
+```
+**Exit Code Meanings**:
+- `0`: All tests passed.
+- `2`: One or more tests failed.
+- `1` or `3`: Compile error or runner failure. (Check editor log for `error CS...` lines). This is a **FAIL**.
+- `4`: Unknown `-testPlatform`. This is a **FAIL**.
+
+Parse `<test-run>` in `test-results/editmode.xml` for `testcasecount`, `passed`, and `failed`.
+> **Critical**: If `testcasecount="0"`, this is **NOT ASSESSED, never a pass**! Tests outside `Assets/` or without assembly definitions are never compiled, and Unity falsely reports `result="Passed"` with 0 tests.
+
+**Play Mode Run (Runtime Tests)**:
+If `Assets/Tests/Runtime/` or `Assets/Tests/PlayMode/` contains test files, run PlayMode as a second pass:
+```powershell
+& "<Unity editor full path>" -batchmode -runTests -projectPath . -testPlatform PlayMode -testResults test-results/playmode.xml
+```
+Report both: `EditMode: PASS (N/N)`, `PlayMode: PASS (M/M)`.
 
 **Unreal Engine:**
 ```bash

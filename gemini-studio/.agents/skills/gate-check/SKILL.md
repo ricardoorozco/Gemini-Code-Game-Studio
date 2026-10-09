@@ -39,7 +39,7 @@ The project progresses through these stages:
 
 ## 1. Parse Arguments
 
-**Target phase:** `$ARGUMENTS[0]` (blank = auto-detect current stage, then validate next transition)
+**Target phase:** `$ARGUMENTS` (blank = auto-detect current stage, then validate next transition)
 
 
 Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE) are skipped — gate-check becomes artifact-existence checks only. In `lean` mode, all four directors still run (phase gates are the purpose of lean mode).

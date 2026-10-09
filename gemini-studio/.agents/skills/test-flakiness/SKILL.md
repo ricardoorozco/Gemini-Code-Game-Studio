@@ -86,15 +86,20 @@ Stop and ask the user which option to pursue.
 
 For each CI log or result file found, parse:
 
-**JUnit XML format** (GdUnit4 / Unity):
+**JUnit XML format** (GdUnit4):
 - Grep for `<testcase name=` to get test names
 - Grep for `<failure` or `<error` to identify failures
 - Parse `classname` and `name` attributes for full test identifiers
 
+**NUnit XML format** (Unity Test Framework / game-ci):
+- Each test is a `<test-case` element; its `fullname` attribute is the test identifier
+- Its `result` attribute is `Passed`, `Failed`, `Inconclusive` or `Skipped`
+- Only `Passed` and `Failed` enter the history table
+
 **Plain text logs**:
 - Grep for pass/fail patterns:
   - Godot: `PASSED` / `FAILED` adjacent to test names
-  - Unreal: `Result: Success` / `Result: Fail`
+  - Unreal: `Result={Success}` / `Result={Fail}`
   - Unity: `Test passed` / `Test failed`
 
 Build a table: `test_id → [run1_result, run2_result, run3_result, ...]`

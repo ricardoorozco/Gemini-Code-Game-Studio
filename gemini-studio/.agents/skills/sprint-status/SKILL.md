@@ -29,15 +29,21 @@ at `balanced` (default), **AC-sized** at `fine`.
 
 ## 1. Find the Sprint
 
-**Argument:** `$ARGUMENTS[0]` (blank = use current sprint)
+**Argument:** `$ARGUMENTS` (blank = use current sprint)
 
 - If an argument is given (e.g., `/sprint-status 3`), search
   `production/sprints/` for a file matching `sprint-03.md`, `sprint-3.md`,
   or similar. Report which file was found.
 - If no argument is given, find the most recently modified file in
   `production/sprints/` and treat it as the current sprint.
-- If `production/sprints/` does not exist or is empty, report: "No sprint
-  files found. Start a sprint with `/sprint-plan new`." Then stop.
+- If `production/sprints/` does not exist or is empty:
+  - **At `rigor: minimal` (default)**, there are no sprints by design: the brief's build order is the plan.
+    1. Scan for story files in `gemini-studio/production/` or `production/`.
+    2. Report: `Build order: [N] of [M] stories complete`.
+    3. Identify the current story (`In Progress` or next `Ready`), and suggest `/dev-story [path]` or `/story-done [path]`.
+    4. If all stories are complete: "Build order done! You can test play the build, add further stories with `/create-stories`, or raise rigor with `/settings`."
+    5. Then stop.
+  - **At `standard` or `full`**, report: "No sprint files found. Start a sprint with `/sprint-plan new`." Then stop.
 
 Read the sprint file in full. Extract:
 - Sprint number and goal

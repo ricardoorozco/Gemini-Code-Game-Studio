@@ -22,8 +22,7 @@
   agree on. Now every consumer reads the named region.
 
   ROTATION. When the narrative below grows past ~200 lines, move it to
-  `production/session-logs/` and start it fresh:
-      bash .claude/scripts/rotate-session-state.sh
+  `production/session-logs/` (e.g. `session-YYYY-MM-DD.md`) and keep CHECKPOINT intact.
   Nothing is lost — and the commit history already records most of what the
   narrative repeats.
 -->

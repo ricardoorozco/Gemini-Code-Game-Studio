@@ -66,11 +66,13 @@ Present the starting inquiry using `ask_question`:
 
 ### Set Rigor (`modes.rigor`)
 If `modes.rigor` is not set in `project.yaml`, prompt the user:
-- `minimal` (Recommended for jams/prototypes): 1-page game brief, no heavy docs, rapid iteration.
-- `standard` (Balanced indie production): 5 core GDD sections, architecture ADRs, standard QA evidence.
+- `minimal` (Recommended default for jams/indie prototyping): 1-page game brief (`design/game-brief.md`), solo review, no heavy GDDs, fast iteration.
+- `standard` (Balanced production): 5 core GDD sections, architecture ADRs, standard QA evidence.
 - `full` (Commercial release): Complete 8 GDD sections, comprehensive director reviews, strict regression testing.
 
 Update `project.yaml`:
+> **Important**: Ensure `project.yaml` has only **one** `modes:` block. If one exists, add/update `rigor:` and `automation:` inside it; do not write duplicate `modes:` keys.
+
 ```yaml
 project:
   stage: Concept
@@ -79,10 +81,21 @@ modes:
   automation: collaborative
 ```
 
-Update checkpoint in `production/session-state/active.md`.
+Update checkpoint in `gemini-studio/production/session-state/active.md`.
 
 ---
 
 ## Phase 5: Handoff & Next Immediate Action
 
-Summarize the initialized project state and present the single immediate next command to run (e.g., `/brainstorm` or `/setup-engine`).
+Present the path matching the chosen rigor:
+
+### If `minimal` (Default) — 4 steps to running code:
+1. `/setup-engine` — configure the engine (Unity 6 LTS)
+2. `/brainstorm` — produce the one-page `design/game-brief.md` (replaces full concept doc, systems decomposition, and per-system GDDs)
+3. `/create-stories` — turn the brief's MVP list into implementable stories
+4. `/dev-story` — implement the first feature and verify in runtime!
+
+### If `standard` or `full` — Full pipeline:
+- `/setup-engine` → `/brainstorm` → `/prototype` → `/art-bible` → `/map-systems` → `/design-system` → `/gate-check`
+
+Present the single immediate next command to run (typically `/setup-engine` or `/brainstorm`).

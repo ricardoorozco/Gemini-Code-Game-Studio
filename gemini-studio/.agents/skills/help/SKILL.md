@@ -34,7 +34,7 @@ Both blocks are resolved before this skill runs. Use them as-is:
 
 ## Step 1: Read the Catalog
 
-Read `.claude/docs/workflow-catalog.yaml`. This is the authoritative list of all
+Read `gemini-studio/docs/workflow-catalog.yaml`. This is the authoritative list of all
 phases, their steps (in order), whether each step is required or optional, and
 the artifact globs that indicate completion.
 
@@ -42,7 +42,7 @@ the artifact globs that indicate completion.
 
 ## Step 1b: Find Skills Not in the Catalog
 
-After reading the catalog, Glob `.claude/skills/*/SKILL.md` to get the full list
+After reading the catalog, Glob `gemini-studio/.agents/skills/*/SKILL.md` to get the full list
 of installed skills. For each file, extract the `name:` field from its frontmatter.
 
 Compare against the `command:` values in the catalog. Any skill whose name does
@@ -63,46 +63,63 @@ skills in production/polish, etc.).
 
 ---
 
-## Step 2: Determine Current Phase
+## Step 2: Determine Current Phase & Rigor
 
-Check in this order:
+1. **Check `project.yaml`** for `modes.rigor` (defaults to `minimal`) and `project.stage`:
+   - If `modes.rigor: minimal`, proceed directly to **Step 4m (The Minimal Path)**.
+   - Otherwise, map `project.stage` to a catalog phase key:
+     - "Concept" → `concept`
+     - "Systems Design" → `systems-design`
+     - "Technical Setup" → `technical-setup`
+     - "Pre-Production" → `pre-production`
+     - "Production" → `production`
+     - "Polish" → `polish`
+     - "Release" → `release`
 
-1. **Take `project.stage` from the config block above** — it is already resolved. Map its value to a catalog phase key:
-   - "Concept" → `concept`
-   - "Systems Design" → `systems-design`
-   - "Technical Setup" → `technical-setup`
-   - "Pre-Production" → `pre-production`
-   - "Production" → `production`
-   - "Polish" → `polish`
-   - "Release" → `release`
-
-2. **If neither is set**, infer phase from artifacts (most-advanced match wins):
-   - code root has 10+ source files → `production`
-   - `production/epics/**/story-*.md` exists → `pre-production`
-   - `docs/architecture/adr-*.md` exists → `technical-setup`
-   - `design/gdd/systems-index.md` exists → `systems-design`
-   - `design/gdd/game-concept.md` (or `design/game-brief.md`) exists → `concept`
+2. **If neither is set**, infer phase from artifacts:
+   - code root (`Assets/Scripts`) has 10+ source files → `production`
+   - stories exist in `gemini-studio/production/sprints/` or `production/epics/` → `pre-production`
+   - `gemini-studio/docs/architecture/adr-*.md` exists → `technical-setup`
+   - `gemini-studio/design/gdd/systems-index.md` exists → `systems-design`
+   - `gemini-studio/design/gdd/game-concept.md` (or `design/game-brief.md`) exists → `concept`
    - Nothing → `concept` (fresh project)
-
-3. **Take `workflow` from the config block above** (per
-   `.claude/docs/workflow-modes.md`). It controls whether optional docs are
-   surfaced as next steps (Step 5).
 
 ---
 
 ## Step 3: Read Session Context
 
-Read `production/session-state/active.md` if it exists — it is append-only and grows unbounded, and only the latest block is relevant, so read just the tail rather than the whole file: grep the last heading (`Grep pattern="^## (Session Extract|STATUS)" path="production/session-state/active.md" output_mode="content" -n`, take the highest line number) and `Read(offset=that line)`. Extract:
+Read `gemini-studio/production/session-state/active.md` if it exists. Extract:
 - What was most recently worked on
 - Any in-progress tasks or open questions
-- Current epic/feature/task from STATUS block (if present)
-
-This tells you what the user just finished or is stuck on — use it to personalize
-the output.
+- Current task from STATUS / CHECKPOINT block
 
 ---
 
-## Step 4: Check Step Completion for the Current Phase
+## Step 4m: The Minimal Path (`rigor: minimal` only)
+
+At `minimal` (the default), the workflow is lean and fast:
+**Engine Setup → Game Brief (`design/game-brief.md`) → Stories → `/dev-story` ↔ `/story-done`.**
+
+Check artifacts in order:
+1. **Engine Configured?**
+   - Check `project.yaml` for `engine.name`. If missing → **Next Step: `/setup-engine`**.
+2. **Game Brief Exists?**
+   - Check `design/game-brief.md` (or `gemini-studio/design/game-brief.md`). If missing → **Next Step: `/brainstorm`** (writes the 1-page brief).
+3. **Stories Exist?**
+   - Check if any story files exist. If missing → **Next Step: `/create-stories`** (turns the brief's MVP list into stories).
+4. **Stories in Progress / Ready:**
+   - If an unfinished story is `In Review` → **Next Step: `/story-done [path]`**.
+   - If an unfinished story is `In Progress` → **Next Step: `/dev-story [path]`** (or `/story-done` if work is complete).
+   - If stories are `Ready` / `Not Started` → **Next Step: `/dev-story [path]`** (take the next in build order).
+   - If all stories are `Complete` or `Done` → The MVP build order is complete! Offer: test play the build, add further stories with `/create-stories`, or increase rigor to `standard` with `/settings`.
+
+> **At `minimal`, NEVER report as blockers:** full concept doc, art bible, systems map, per-system GDDs, `/create-epics`, sprint plans, or phase gates. The 1-page brief replaces the GDDs, and its build order replaces the sprint plan.
+
+Skip Steps 4, 5, 8 and jump directly to Step 7 (Present Output).
+
+---
+
+## Step 4: Check Step Completion for Current Phase (Standard / Full Rigor)
 
 For each step in the current phase (from the catalog):
 

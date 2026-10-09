@@ -31,7 +31,7 @@ wrong internal format.
 
 **Argument modes:**
 
-**Audit mode:** `$ARGUMENTS[0]` (blank = `full`)
+**Audit mode:** `$ARGUMENTS` (blank = `full`)
 
 - **No argument / `full`**: Complete audit — all artifact types
 - **`gdds`**: GDD format compliance only

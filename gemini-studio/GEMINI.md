@@ -65,7 +65,7 @@ Every major task follows the 5-step collaboration cycle:
 
 1. **Unity Hub Project Initialization**:
    - The Unity project MUST be created by the user from **Unity Hub** (ensuring proper project settings, version pinning, and packages directory).
-   - This studio architecture (`.agents/`, `design/`, `docs/`, `production/`, `project.yaml`) is implemented directly in the root directory created by Unity Hub.
+   - This studio is portable: copy the `gemini-studio/` folder into the root directory created by Unity Hub and run `init.ps1`, which creates the root `GEMINI.md` bridge and `.agents/` pointers.
    - The studio MUST verify that `ProjectSettings/ProjectVersion.txt` exists before writing game code. If absent, the AI will instruct the user to create the project in Unity Hub first.
 
 2. **No Direct Package Manifest Modification**:

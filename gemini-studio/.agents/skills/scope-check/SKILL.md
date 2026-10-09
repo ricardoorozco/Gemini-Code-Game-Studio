@@ -14,7 +14,7 @@ This skill is read-only — it reports findings but writes no files.
 Compares original planned scope against current state to detect, quantify, and triage
 scope creep.
 
-**Argument:** `$ARGUMENTS[0]` — feature name, sprint number, or milestone name.
+**Argument:** `$ARGUMENTS` — feature name, sprint number, or milestone name.
 
 ---
 

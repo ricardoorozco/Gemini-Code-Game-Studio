@@ -47,7 +47,7 @@ the two happened — a reader cannot tell from a green result.
 
 ## Phase 1: Identify Balance Domain
 
-Determine the balance domain from `$ARGUMENTS[0]`:
+Determine the balance domain from `$ARGUMENTS`:
 
 - **Combat** → weapon/ability DPS, time-to-kill, damage type interactions
 - **Economy** → resource faucets/sinks, acquisition rates, item pricing
